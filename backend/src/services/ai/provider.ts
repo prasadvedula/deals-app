@@ -10,13 +10,31 @@ export const OLLAMA_CHAT_MODEL = 'qwen2.5:3b-instruct';
 export const OLLAMA_EMBED_MODEL = 'nomic-embed-text';
 export const CLAUDE_MODEL = 'claude-opus-4-8';
 
+// Allow overriding Ollama host (useful when running Ollama on a remote machine)
+const OLLAMA_BASE_URL = (process.env.OLLAMA_BASE_URL ?? 'http://localhost:11434').replace(/\/$/, '');
+
+// ── Ollama availability (checked once at startup, cached) ─────────────────────
+let _ollamaAvailable: boolean | null = null;
+
+export async function isOllamaAvailable(): Promise<boolean> {
+  if (_ollamaAvailable !== null) return _ollamaAvailable;
+  try {
+    const res = await fetch(`${OLLAMA_BASE_URL}/api/tags`, { signal: AbortSignal.timeout(3000) });
+    _ollamaAvailable = res.ok;
+  } catch {
+    _ollamaAvailable = false;
+  }
+  if (!_ollamaAvailable) console.warn(`[AI] Ollama not reachable at ${OLLAMA_BASE_URL} — AI features degraded`);
+  return _ollamaAvailable;
+}
+
 // ── lazy clients ─────────────────────────────────────────────────────────────
 let _ollama: OpenAI | null = null;
 let _anthropic: import('@anthropic-ai/sdk').default | null = null;
 
 export function getOllamaClient(): OpenAI {
   if (!_ollama)
-    _ollama = new OpenAI({ baseURL: 'http://localhost:11434/v1', apiKey: 'ollama' });
+    _ollama = new OpenAI({ baseURL: `${OLLAMA_BASE_URL}/v1`, apiKey: 'ollama' });
   return _ollama;
 }
 
@@ -39,6 +57,7 @@ export async function generateResponse(
   systemPrompt: string
 ): Promise<string> {
   if (AI_PROVIDER === 'ollama') {
+    if (!(await isOllamaAvailable())) return '';
     const res = await ollamaClient().chat.completions.create({
       model: OLLAMA_CHAT_MODEL,
       messages: [
@@ -75,6 +94,11 @@ export async function streamChatResponse(
   let full = '';
 
   if (AI_PROVIDER === 'ollama') {
+    if (!(await isOllamaAvailable())) {
+      const msg = "I'm running in catalog-only mode right now (Ollama AI isn't available on this server). You can still browse the **Catalog**, **Trending**, and **AI Search** pages — the search uses curated Indian brand data. To enable full AI chat, set `AI_PROVIDER=claude` and provide an `ANTHROPIC_API_KEY` in the Railway environment variables.";
+      onChunk(msg);
+      return msg;
+    }
     const stream = await ollamaClient().chat.completions.create({
       model: OLLAMA_CHAT_MODEL,
       stream: true,
@@ -110,7 +134,8 @@ export async function streamChatResponse(
 // ── embed (Ollama only; Claude falls back to null → FTS5 used instead) ────────
 export async function embed(text: string): Promise<number[] | null> {
   if (AI_PROVIDER !== 'ollama') return null;
-  const res = await fetch('http://localhost:11434/api/embed', {
+  if (!(await isOllamaAvailable())) return null;
+  const res = await fetch(`${OLLAMA_BASE_URL}/api/embed`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ model: OLLAMA_EMBED_MODEL, input: text }),
@@ -133,6 +158,6 @@ export function cosineSimilarity(a: number[], b: number[]): number {
 // ── providerInfo (for /api/health) ───────────────────────────────────────────
 export function providerInfo() {
   return AI_PROVIDER === 'ollama'
-    ? { provider: 'ollama', chatModel: OLLAMA_CHAT_MODEL, embedModel: OLLAMA_EMBED_MODEL }
-    : { provider: 'claude', chatModel: CLAUDE_MODEL, embedModel: null };
+    ? { provider: 'ollama', chatModel: OLLAMA_CHAT_MODEL, embedModel: OLLAMA_EMBED_MODEL, ollamaUrl: OLLAMA_BASE_URL, available: _ollamaAvailable }
+    : { provider: 'claude', chatModel: CLAUDE_MODEL, embedModel: null, available: !!process.env.ANTHROPIC_API_KEY };
 }

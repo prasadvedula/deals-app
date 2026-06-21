@@ -272,14 +272,14 @@ function generate30DayHistory(
   return entries;
 }
 
-async function seed() {
+export async function seed() {
   const db = getDb();
 
   const existingCount = (
     db.prepare('SELECT COUNT(*) as count FROM products').get() as { count: number }
   ).count;
   if (existingCount > 0) {
-    console.log(`Database already has ${existingCount} products. Skipping seed.`);
+    console.log(`[Seed] Database already has ${existingCount} products. Skipping.`);
     return;
   }
 
@@ -330,4 +330,7 @@ async function seed() {
   console.log(`✓ Seeded ${sampleProducts.length} products with 30-day price history.`);
 }
 
-seed().catch(console.error);
+// Only run as a script (npm run seed); when imported the caller invokes seed()
+if (process.argv[1] && process.argv[1].includes('seed')) {
+  seed().catch(console.error);
+}
