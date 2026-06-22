@@ -3,6 +3,28 @@ import { Heart, TrendingUp, ExternalLink, Bell } from 'lucide-react';
 import { Product } from '../types';
 import { inr } from '../utils/currency';
 
+function dealScore(product: Product): number {
+  const discountPct = product.original_price > product.current_price
+    ? ((product.original_price - product.current_price) / product.original_price) * 100
+    : 0;
+  const bonus = discountPct > 30 ? 15 : discountPct > 15 ? 7 : 0;
+  return Math.min(100, Math.round(discountPct * 0.5 + product.trending_score * 0.35 + bonus));
+}
+
+function ScoreBadge({ score }: { score: number }) {
+  if (score < 40) return null;
+  const cfg =
+    score >= 80 ? { bg: 'bg-green-500',  label: 'Hot Deal' } :
+    score >= 65 ? { bg: 'bg-amber-400',  label: 'Good Deal' } :
+                  { bg: 'bg-blue-400',   label: 'Fair Deal' };
+  return (
+    <div className={`absolute bottom-2 left-2 ${cfg.bg} text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full flex items-center gap-0.5`}>
+      <span>{score}</span>
+      <span className="opacity-80">· {cfg.label}</span>
+    </div>
+  );
+}
+
 interface Props {
   product: Product;
   isFavorite?: boolean;
@@ -37,6 +59,7 @@ export default function ProductCard({ product, isFavorite = false, onToggleFavor
             <TrendingUp size={10} /> Hot
           </div>
         )}
+        <ScoreBadge score={dealScore(product)} />
         <button
           className={`absolute top-2 right-2 p-1.5 rounded-full transition-colors ${
             isFavorite ? 'bg-red-100 text-red-500' : 'bg-white/80 text-gray-400 hover:text-red-400'

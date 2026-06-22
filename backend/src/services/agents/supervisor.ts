@@ -18,6 +18,8 @@ import { getLatestWeeklyReport } from './weeklyReport';
 import { getDealDna } from './dealDna';
 import { getCouponStack } from './couponAdvisor';
 import { getSeasonalAlerts } from './seasonalPatterns';
+import { compareProducts } from './productComparison';
+import { findBestBargain } from './bargainFinder';
 import { getDb } from '../../database/db';
 import { Product } from '../../models/types';
 
@@ -44,6 +46,8 @@ const INTENTS = [
   'coupon_stack',
   'seasonal',
   'mood',
+  'compare',
+  'bargain',
   'general',
 ] as const;
 
@@ -64,6 +68,8 @@ Rules:
 - coupon_stack: coupons, cashback, bank card offers, "how to save on X", "best offer on X", "HDFC cashback"
 - seasonal: upcoming sales, Diwali sale, Big Billion Days, "next sale for X", "when is Flipkart sale?"
 - mood: feeling-based shopping, "treat myself", "stressed", "gift for mom", "I'm bored", "cheer me up"
+- compare: compare two specific products, "X vs Y", "which is better X or Y", "compare iPhone vs Samsung"
+- bargain: absolute best/lowest price for a product, "cheapest way to buy X", "best deal on X", "how to pay least for X"
 - general: anything else
 
 Message: "${message}"
@@ -84,14 +90,33 @@ async function supervisorNode(state: State): Promise<Partial<State>> {
   return { intent, next: intent };
 }
 
-// ── Helper: find product by keywords ─────────────────────────────────────────
-async function findProduct(message: string): Promise<Product | undefined> {
+// ── Helper: FTS5 full-text product lookup (100x faster than LIKE at scale) ────
+function findProduct(message: string): Product | undefined {
   const db = getDb();
-  const words = message.toLowerCase().split(/\s+/).filter(w => w.length > 2);
+  const words = message.toLowerCase()
+    .replace(/[^\w\s]/g, ' ')
+    .split(/\s+/)
+    .filter(w => w.length > 2)
+    .slice(0, 6);
   if (!words.length) return undefined;
-  return db.prepare(
-    `SELECT * FROM products WHERE ${words.map(() => 'LOWER(name) LIKE ?').join(' OR ')} LIMIT 1`
-  ).get(...words.map(w => `%${w}%`)) as Product | undefined;
+
+  // FTS5 OR search across name, description, category
+  const ftsQuery = words.join(' OR ');
+  try {
+    const hit = db.prepare(`
+      SELECT p.* FROM products p
+      JOIN products_fts ON products_fts.rowid = p.id
+      WHERE products_fts MATCH ?
+      ORDER BY p.trending_score DESC
+      LIMIT 1
+    `).get(ftsQuery) as Product | undefined;
+    if (hit) return hit;
+  } catch { /* FTS5 not ready yet — fall through to LIKE */ }
+
+  // Fallback: LIKE (used only when FTS5 index is being built)
+  const conditions = words.map(() => 'LOWER(name) LIKE ?').join(' OR ');
+  return db.prepare(`SELECT * FROM products WHERE ${conditions} LIMIT 1`)
+    .get(...words.map(w => `%${w}%`)) as Product | undefined;
 }
 
 function parseBudget(message: string): number {
@@ -121,11 +146,7 @@ async function dealHunterNode(state: State): Promise<Partial<State>> {
 
 async function reviewNode(state: State): Promise<Partial<State>> {
   try {
-    const db = getDb();
-    const words = state.userMessage.toLowerCase().split(' ');
-    const product = db.prepare(
-      `SELECT * FROM products WHERE ${words.map(() => 'LOWER(name) LIKE ?').join(' OR ')} LIMIT 1`
-    ).get(...words.map(w => `%${w}%`)) as { id: number; name: string } | undefined;
+    const product = findProduct(state.userMessage) as ({ id: number; name: string } | undefined);
 
     if (!product) {
       const summary = await generateResponse(
@@ -180,28 +201,46 @@ Respond with ONLY valid JSON:
 
     const db = getDb();
 
-    const buildKeywordFilter = (kws: string[]) => {
-      if (!kws.length) return { clause: '', params: [] as string[] };
-      const conditions = kws.map(() => '(LOWER(name) LIKE ? OR LOWER(category) LIKE ? OR LOWER(description) LIKE ?)').join(' OR ');
-      return { clause: `AND (${conditions})`, params: kws.flatMap(kw => [`%${kw}%`, `%${kw}%`, `%${kw}%`]) };
-    };
+    // FTS5 search: orders of magnitude faster than LIKE at scale
+    let products: Array<{ id: number; name: string; current_price: number; platform: string; discount_pct: number; image_url?: string }> = [];
 
-    const buildExclusionFilter = (exs: string[]) => {
-      if (!exs.length) return { clause: '', params: [] as string[] };
-      const conditions = exs.map(() => 'LOWER(name) NOT LIKE ? AND LOWER(category) NOT LIKE ?').join(' AND ');
-      return { clause: `AND (${conditions})`, params: exs.flatMap(ex => [`%${ex}%`, `%${ex}%`]) };
-    };
+    if (keywords.length > 0) {
+      const ftsQuery = keywords.join(' OR ');
+      try {
+        products = db.prepare(`
+          SELECT p.*,
+                 ROUND((p.original_price - p.current_price) * 100.0 / p.original_price, 1) AS discount_pct
+          FROM products p
+          JOIN products_fts ON products_fts.rowid = p.id
+          WHERE products_fts MATCH ?
+            AND p.current_price <= ?
+          ORDER BY p.trending_score DESC, discount_pct DESC
+          LIMIT 6
+        `).all(ftsQuery, budget) as typeof products;
+      } catch { /* FTS5 not ready */ }
+    }
 
-    const { clause: kClause, params: kparams } = buildKeywordFilter(keywords);
-    const { clause: exClause, params: exparams } = buildExclusionFilter(exclusions);
+    // If FTS returned nothing, fall back to category + price filter (uses indexes)
+    if (products.length === 0) {
+      products = db.prepare(`
+        SELECT *, ROUND((original_price - current_price) * 100.0 / original_price, 1) AS discount_pct
+        FROM products
+        WHERE current_price <= ?
+          ${productType ? "AND (LOWER(category) = LOWER(?) OR LOWER(name) LIKE LOWER(?))" : ''}
+        ORDER BY trending_score DESC, discount_pct DESC
+        LIMIT 6
+      `).all(
+        budget,
+        ...(productType ? [productType, `%${productType}%`] : [])
+      ) as typeof products;
+    }
 
-    const products = db.prepare(`
-      SELECT *, ROUND((original_price - current_price) * 100.0 / original_price, 1) AS discount_pct
-      FROM products
-      WHERE current_price <= ? ${kClause} ${exClause}
-      ORDER BY trending_score DESC, discount_pct DESC
-      LIMIT 6
-    `).all(budget, ...kparams, ...exparams) as Array<{ id: number; name: string; current_price: number; platform: string; discount_pct: number; image_url?: string }>;
+    // Client-side exclusion filter (cheap — applied to max 6 rows)
+    if (exclusions.length > 0) {
+      products = products.filter(p =>
+        !exclusions.some(ex => p.name.toLowerCase().includes(ex.toLowerCase()))
+      );
+    }
 
     if (products.length === 0) {
       const suggestion = await generateResponse(
@@ -221,11 +260,7 @@ Respond with ONLY valid JSON:
 
 async function predictorNode(state: State): Promise<Partial<State>> {
   try {
-    const db = getDb();
-    const words = state.userMessage.toLowerCase().split(' ');
-    const product = db.prepare(
-      `SELECT * FROM products WHERE ${words.map(() => 'LOWER(name) LIKE ?').join(' OR ')} LIMIT 1`
-    ).get(...words.map(w => `%${w}%`)) as { id: number; name: string; current_price: number } | undefined;
+    const product = findProduct(state.userMessage) as ({ id: number; name: string; current_price: number } | undefined);
 
     if (!product) return { agentOutput: { type: 'predictor', found: false, message: 'Could not find that product. Search for it first using AI Search.' }, next: END };
     const prediction = await getBuyTimePrediction(product.id);
@@ -318,6 +353,20 @@ Respond with ONLY valid JSON: {"mood":"treat myself","budget":2000}`;
   } catch (e) { return { error: String(e), next: END }; }
 }
 
+async function compareNode(state: State): Promise<Partial<State>> {
+  try {
+    const result = await compareProducts(state.userMessage);
+    return { agentOutput: { type: 'compare', ...result }, next: END };
+  } catch (e) { return { error: String(e), next: END }; }
+}
+
+async function bargainNode(state: State): Promise<Partial<State>> {
+  try {
+    const result = await findBestBargain(state.userMessage);
+    return { agentOutput: { type: 'bargain', ...result }, next: END };
+  } catch (e) { return { error: String(e), next: END }; }
+}
+
 async function generalNode(state: State): Promise<Partial<State>> {
   try {
     const db = getDb();
@@ -345,6 +394,8 @@ function buildGraph() {
     .addNode('coupon_stack', couponStackNode)
     .addNode('seasonal',     seasonalNode)
     .addNode('mood',         moodNode)
+    .addNode('compare',      compareNode)
+    .addNode('bargain',      bargainNode)
     .addNode('general',      generalNode)
     .addEdge(START, 'supervisor')
     .addConditionalEdges('supervisor', (s) => s.next, {
@@ -358,6 +409,8 @@ function buildGraph() {
       coupon_stack: 'coupon_stack',
       seasonal:     'seasonal',
       mood:         'mood',
+      compare:      'compare',
+      bargain:      'bargain',
       general:      'general',
     })
     .addEdge('price_search',  END)
@@ -370,6 +423,8 @@ function buildGraph() {
     .addEdge('coupon_stack',  END)
     .addEdge('seasonal',      END)
     .addEdge('mood',          END)
+    .addEdge('compare',       END)
+    .addEdge('bargain',       END)
     .addEdge('general',       END);
 
   return graph.compile();

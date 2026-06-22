@@ -156,6 +156,15 @@ function initSchema(db: Database.Database): void {
       content_rowid=id
     );
 
+    -- Performance indexes for 100k+ products
+    CREATE INDEX IF NOT EXISTS idx_products_price       ON products(current_price);
+    CREATE INDEX IF NOT EXISTS idx_products_trending    ON products(trending_score DESC);
+    CREATE INDEX IF NOT EXISTS idx_products_category    ON products(category);
+    CREATE INDEX IF NOT EXISTS idx_products_platform    ON products(platform);
+    CREATE INDEX IF NOT EXISTS idx_products_cat_price   ON products(category, current_price);
+    CREATE INDEX IF NOT EXISTS idx_price_history_pid    ON price_history(product_id, recorded_at DESC);
+    CREATE INDEX IF NOT EXISTS idx_products_created     ON products(created_at DESC);
+
     CREATE TRIGGER IF NOT EXISTS products_ai AFTER INSERT ON products BEGIN
       INSERT INTO products_fts(rowid, product_id, name, description, category)
       VALUES (new.id, new.id, new.name, new.description, new.category);

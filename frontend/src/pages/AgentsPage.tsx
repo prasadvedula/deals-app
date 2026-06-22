@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Bot, Target, BarChart3, RefreshCw, Plus, Trash2, CheckCircle, Eye, AlertCircle, Loader2, TrendingDown, TrendingUp, Minus, Zap } from 'lucide-react';
+import { Bot, Target, BarChart3, RefreshCw, Plus, Trash2, CheckCircle, Eye, AlertCircle, Loader2, TrendingDown, TrendingUp, Minus, Zap, GitCompare, Sparkles } from 'lucide-react';
 import { api } from '../api/client';
 import { inr } from '../utils/currency';
 
@@ -81,6 +81,8 @@ const INTENT_LABELS: Record<string, string> = {
   coupon_stack:  'Coupon Advisor',
   seasonal:      'Sale Season',
   mood:          'Mood Shopping',
+  compare:       'Product Compare',
+  bargain:       'Bargain Finder',
   general:       'Assistant',
 };
 
@@ -95,6 +97,8 @@ const INTENT_COLORS: Record<string, string> = {
   coupon_stack:  'bg-orange-100 text-orange-700',
   seasonal:      'bg-cyan-100 text-cyan-700',
   mood:          'bg-fuchsia-100 text-fuchsia-700',
+  compare:       'bg-indigo-100 text-indigo-700',
+  bargain:       'bg-lime-100 text-lime-700',
   general:       'bg-gray-100 text-gray-600',
 };
 
@@ -107,12 +111,12 @@ function SupervisorTab() {
   const SUGGESTIONS = [
     'Best phone under 25k for IT professional',
     'Laptop under 50k for college student',
-    'What coupons can I stack on OnePlus TV?',
-    'Price history of boAt earbuds',
+    'Compare boAt earbuds vs Sony WH-1000XM5',
+    'Cheapest way to buy OnePlus TV today',
+    'What coupons can I stack on iPhone?',
+    'Price history of Samsung Galaxy',
     'When is the next Big Billion Days sale?',
     'I\'m stressed, suggest something under ₹1000',
-    'Should I buy the Samsung Galaxy now?',
-    'What are this week\'s top deals?',
   ];
 
   async function send(msg = message) {
@@ -371,8 +375,121 @@ function SupervisorTab() {
             );
           })()}
 
+          {/* ── Product Compare ── */}
+          {result.output?.type === 'compare' && (() => {
+            type CP = { name: string; current_price: number; original_price: number; platform: string; discount_pct: number; trending_score: number };
+            const products = result.output.products as CP[];
+            const verdict  = result.output.verdict as string;
+            const winner   = result.output.winner  as string;
+            const scores   = result.output.scores  as { a: number; b: number };
+            if (!result.output.found) {
+              return (
+                <p className="text-sm text-amber-800 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
+                  {result.output.summary as string}
+                </p>
+              );
+            }
+            return (
+              <div className="space-y-3">
+                {winner && (
+                  <div className="flex items-center gap-2 bg-indigo-50 border border-indigo-100 rounded-xl px-4 py-2">
+                    <GitCompare size={16} className="text-indigo-500 flex-shrink-0" />
+                    <p className="text-sm font-semibold text-indigo-800">
+                      {verdict === 'tie' ? 'Too close to call — both are similar value' : `Winner: ${winner}`}
+                    </p>
+                  </div>
+                )}
+                <div className="grid grid-cols-2 gap-3">
+                  {products.map((p, i) => {
+                    const isWinner = verdict !== 'tie' && verdict !== 'incomplete' && winner === p.name;
+                    const score = i === 0 ? scores?.a : scores?.b;
+                    return (
+                      <div key={i} className={`rounded-xl p-3 space-y-1.5 border ${isWinner ? 'bg-indigo-50 border-indigo-200' : 'bg-gray-50 border-gray-100'}`}>
+                        {isWinner && <span className="text-[10px] font-bold bg-indigo-500 text-white px-1.5 py-0.5 rounded-full">WINNER</span>}
+                        <p className="text-xs font-semibold text-gray-800 leading-snug line-clamp-3">{p.name}</p>
+                        <p className="text-lg font-bold text-gray-900">{inr(p.current_price)}</p>
+                        <div className="flex flex-wrap gap-1 text-[10px]">
+                          <span className="bg-green-100 text-green-700 font-semibold px-1.5 py-0.5 rounded-full">{p.discount_pct}% off</span>
+                          <span className="bg-blue-50 text-blue-600 px-1.5 py-0.5 rounded-full">{p.platform}</span>
+                          {score != null && <span className="bg-indigo-50 text-indigo-600 px-1.5 py-0.5 rounded-full">Score {score}</span>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                {!!result.output.summary && (
+                  <p className="text-sm text-gray-700 leading-relaxed bg-indigo-50 rounded-xl px-4 py-3">
+                    {result.output.summary as string}
+                  </p>
+                )}
+              </div>
+            );
+          })()}
+
+          {/* ── Bargain Finder ── */}
+          {result.output?.type === 'bargain' && (() => {
+            if (!result.output.found) {
+              return (
+                <p className="text-sm text-amber-800 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
+                  {result.output.message as string}
+                </p>
+              );
+            }
+            type BStep = { label: string; saving: number; description: string; type: string };
+            const steps        = result.output.steps        as BStep[];
+            const effectivePrice = result.output.effectivePrice as number;
+            const totalSaving  = result.output.totalSaving  as number;
+            const savingPct    = result.output.savingPercent as number;
+            const urgency      = result.output.urgency      as string;
+            const urgencyStyle = urgency === 'buy_now' ? 'bg-green-50 text-green-700 border-green-200' :
+                                 urgency === 'wait'    ? 'bg-amber-50 text-amber-700 border-amber-200' :
+                                                        'bg-red-50 text-red-700 border-red-200';
+            const urgencyLabel = urgency === 'buy_now' ? '✅ Buy Now — Great Time' :
+                                 urgency === 'wait'    ? '⏳ Wait — Price May Drop' : '⚡ Act Fast';
+            return (
+              <div className="space-y-3">
+                <div className="bg-lime-50 border border-lime-200 rounded-xl p-4 flex items-center justify-between">
+                  <div>
+                    <p className="text-xs font-semibold text-lime-700">Effective Price After Stacking</p>
+                    <p className="text-2xl font-bold text-gray-900 mt-0.5">{inr(effectivePrice)}</p>
+                    <p className="text-xs text-lime-700 mt-0.5">You save {inr(totalSaving)} ({savingPct}%)</p>
+                  </div>
+                  <Sparkles size={28} className="text-lime-400" />
+                </div>
+                <div className={`border rounded-xl px-3 py-2 text-xs font-semibold ${urgencyStyle}`}>
+                  {urgencyLabel}
+                </div>
+                {steps.length > 0 && (
+                  <div className="space-y-1.5">
+                    {steps.map((s, i) => (
+                      <div key={i} className="flex items-start gap-3 bg-gray-50 rounded-xl px-3 py-2.5">
+                        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-full flex-shrink-0 mt-0.5 ${
+                          s.type === 'bank'     ? 'bg-blue-100 text-blue-700' :
+                          s.type === 'wallet'   ? 'bg-purple-100 text-purple-700' :
+                          s.type === 'seasonal' ? 'bg-red-100 text-red-700' :
+                          s.type === 'emi'      ? 'bg-teal-100 text-teal-700' :
+                                                  'bg-orange-100 text-orange-700'
+                        }`}>{s.type.toUpperCase()}</span>
+                        <div className="flex-1 min-w-0">
+                          <span className="text-sm font-semibold text-gray-800">{s.label}</span>
+                          <p className="text-xs text-gray-400 truncate">{s.description}</p>
+                        </div>
+                        <span className="text-xs font-bold text-green-600 flex-shrink-0">{inr(s.saving)} off</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+                {!!result.output.summary && (
+                  <p className="text-sm text-gray-700 leading-relaxed bg-lime-50 rounded-xl px-4 py-3">
+                    {result.output.summary as string}
+                  </p>
+                )}
+              </div>
+            );
+          })()}
+
           {/* ── Catch-all text (review / predictor / deal_hunter / general / not-found) ── */}
-          {!['budget','price_search','deal_dna','coupon_stack','seasonal','mood'].includes(result.output?.type as string) &&
+          {!['budget','price_search','deal_dna','coupon_stack','seasonal','mood','compare','bargain'].includes(result.output?.type as string) &&
             !!(result.output?.answer || result.output?.summary || result.output?.message) && (
             <p className="text-sm text-gray-700 leading-relaxed">
               {(result.output.answer ?? result.output.summary ?? result.output.message) as string}
@@ -380,7 +497,7 @@ function SupervisorTab() {
           )}
 
           {/* not-found message for new agents */}
-          {['deal_dna','coupon_stack','seasonal','mood'].includes(result.output?.type as string) &&
+          {['deal_dna','coupon_stack','seasonal','mood','compare','bargain'].includes(result.output?.type as string) &&
             !result.output.found && !!result.output.message && (
             <p className="text-sm text-gray-600 bg-amber-50 border border-amber-100 rounded-xl px-4 py-3">
               {result.output.message as string}
