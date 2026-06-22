@@ -1,0 +1,457 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1440" height="1080" viewBox="0 0 1440 1080" font-family="Segoe UI, system-ui, sans-serif">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#0f0c29"/>
+      <stop offset="50%" style="stop-color:#1a1640"/>
+      <stop offset="100%" style="stop-color:#0d1b2a"/>
+    </linearGradient>
+    <linearGradient id="supGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f59e0b"/>
+      <stop offset="100%" style="stop-color:#d97706"/>
+    </linearGradient>
+    <linearGradient id="graphBorder" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#3b82f6;stop-opacity:0.4"/>
+      <stop offset="100%" style="stop-color:#8b5cf6;stop-opacity:0.4"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="softglow">
+      <feGaussianBlur stdDeviation="5" result="coloredBlur"/>
+      <feMerge><feMergeNode in="coloredBlur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="cardshadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-color="#000" flood-opacity="0.4"/>
+    </filter>
+    <marker id="arrowWhite" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+      <polygon points="0 0, 7 2.5, 0 5" fill="rgba(255,255,255,0.5)"/>
+    </marker>
+    <marker id="arrowYellow" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+      <polygon points="0 0, 7 2.5, 0 5" fill="#fbbf24"/>
+    </marker>
+    <marker id="arrowGreen" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+      <polygon points="0 0, 7 2.5, 0 5" fill="#34d399"/>
+    </marker>
+    <marker id="arrowPurple" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+      <polygon points="0 0, 7 2.5, 0 5" fill="#a78bfa"/>
+    </marker>
+    <pattern id="dots" width="28" height="28" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1" fill="rgba(255,255,255,0.04)"/>
+    </pattern>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1440" height="1080" fill="url(#bgGrad)"/>
+  <rect width="1440" height="1080" fill="url(#dots)"/>
+
+  <!-- ══════════════════════════════════════════
+       TITLE
+  ══════════════════════════════════════════ -->
+  <text x="720" y="38" text-anchor="middle" font-size="21" font-weight="700" fill="white" filter="url(#glow)">DealSense — Agentic AI Architecture  (v3 · Updated)</text>
+  <text x="720" y="60" text-anchor="middle" font-size="12" fill="rgba(255,255,255,0.4)">LangGraph StateGraph · 11-Node Multi-Agent Orchestration · All Agents Unified Under Supervisor</text>
+
+  <!-- ══════════════════════════════════════════
+       LAYER 1 — UI
+  ══════════════════════════════════════════ -->
+  <line x1="20" y1="76" x2="1420" y2="76" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+  <text x="28" y="92" font-size="9.5" fill="rgba(255,255,255,0.3)" font-weight="700" letter-spacing="2">LAYER 1 — USER INTERFACE</text>
+
+  <!-- UI cards -->
+  <g fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.18)" stroke-width="1">
+    <rect x="28"   y="100" width="142" height="50" rx="9"/>
+    <rect x="178"  y="100" width="142" height="50" rx="9"/>
+    <rect x="328"  y="100" width="142" height="50" rx="9"/>
+    <rect x="478"  y="100" width="142" height="50" rx="9"/>
+    <rect x="628"  y="100" width="142" height="50" rx="9"/>
+    <rect x="778"  y="100" width="142" height="50" rx="9"/>
+    <rect x="928"  y="100" width="142" height="50" rx="9"/>
+    <rect x="1078" y="100" width="142" height="50" rx="9"/>
+    <rect x="1228" y="100" width="184" height="50" rx="9"/>
+  </g>
+  <!-- Labels -->
+  <text x="99"   y="122" text-anchor="middle" font-size="10.5" font-weight="600" fill="white">&#x26A1; Supervisor Chat</text>
+  <text x="99"   y="138" text-anchor="middle" font-size="9"    fill="rgba(255,255,255,0.45)">AgentsPage.tsx</text>
+  <text x="249"  y="122" text-anchor="middle" font-size="10.5" font-weight="600" fill="white">&#x1F4CA; Product Detail</text>
+  <text x="249"  y="138" text-anchor="middle" font-size="9"    fill="rgba(255,255,255,0.45)">6-tab modal</text>
+  <text x="399"  y="122" text-anchor="middle" font-size="10.5" font-weight="600" fill="white">&#x1F3AF; Deal Goals</text>
+  <text x="399"  y="138" text-anchor="middle" font-size="9"    fill="rgba(255,255,255,0.45)">GoalsTab.tsx</text>
+  <text x="549"  y="122" text-anchor="middle" font-size="10.5" font-weight="600" fill="white">&#x1F4C8; Weekly Report</text>
+  <text x="549"  y="138" text-anchor="middle" font-size="9"    fill="rgba(255,255,255,0.45)">ReportTab.tsx</text>
+  <text x="699"  y="122" text-anchor="middle" font-size="10.5" font-weight="600" fill="white">&#x1F60A; Mood Shop</text>
+  <text x="699"  y="138" text-anchor="middle" font-size="9"    fill="rgba(255,255,255,0.45)">MoodSearchPage.tsx</text>
+  <text x="849"  y="122" text-anchor="middle" font-size="10.5" font-weight="600" fill="white">&#x1F4CB; AI Assistant</text>
+  <text x="849"  y="138" text-anchor="middle" font-size="9"    fill="rgba(255,255,255,0.45)">AssistantPage.tsx</text>
+  <text x="999"  y="122" text-anchor="middle" font-size="10.5" font-weight="600" fill="white">&#x1F916; Alert Bot</text>
+  <text x="999"  y="138" text-anchor="middle" font-size="9"    fill="rgba(255,255,255,0.45)">alertBot.ts</text>
+  <text x="1149" y="122" text-anchor="middle" font-size="10.5" font-weight="600" fill="white">&#x1F4C5; Sale Banner</text>
+  <text x="1149" y="138" text-anchor="middle" font-size="9"    fill="rgba(255,255,255,0.45)">SeasonalBanner.tsx</text>
+  <text x="1320" y="122" text-anchor="middle" font-size="10.5" font-weight="600" fill="white">&#x1F50D; AI Search · Add Product</text>
+  <text x="1320" y="138" text-anchor="middle" font-size="9"    fill="rgba(255,255,255,0.45)">AISearchPage · ImportPage</text>
+
+  <!-- ══════════════════════════════════════════
+       LAYER 2 — API GATEWAY
+  ══════════════════════════════════════════ -->
+  <line x1="20" y1="164" x2="1420" y2="164" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+  <text x="28" y="178" font-size="9.5" fill="rgba(255,255,255,0.3)" font-weight="700" letter-spacing="2">LAYER 2 — EXPRESS API GATEWAY  (:3001)</text>
+
+  <rect x="28" y="186" width="1384" height="40" rx="9" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.12)" stroke-width="1" stroke-dasharray="6,3"/>
+  <text x="720" y="203" text-anchor="middle" font-size="10.5" font-weight="600" fill="rgba(255,255,255,0.65)">Express Router</text>
+  <text x="720" y="219" text-anchor="middle" font-size="9.5" fill="rgba(255,255,255,0.35)">/api/supervisor  ·  /api/ai/mood-search  ·  /api/products/:id/deal-dna|coupons|seasonal  ·  /api/auth  ·  /api/favorites  ·  /api/goals  ·  ws://</text>
+
+  <!-- Down arrows UI → API -->
+  <line x1="99"   y1="150" x2="99"   y2="186" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" marker-end="url(#arrowWhite)"/>
+  <line x1="249"  y1="150" x2="249"  y2="186" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" marker-end="url(#arrowWhite)"/>
+  <line x1="399"  y1="150" x2="399"  y2="186" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" marker-end="url(#arrowWhite)"/>
+  <line x1="549"  y1="150" x2="549"  y2="186" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" marker-end="url(#arrowWhite)"/>
+  <line x1="699"  y1="150" x2="699"  y2="186" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" marker-end="url(#arrowWhite)"/>
+  <line x1="849"  y1="150" x2="849"  y2="186" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" marker-end="url(#arrowWhite)"/>
+  <line x1="999"  y1="150" x2="999"  y2="186" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" marker-end="url(#arrowWhite)"/>
+  <line x1="1149" y1="150" x2="1149" y2="186" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" marker-end="url(#arrowWhite)"/>
+  <line x1="1320" y1="150" x2="1320" y2="186" stroke="rgba(255,255,255,0.2)" stroke-width="1.2" marker-end="url(#arrowWhite)"/>
+
+  <!-- ══════════════════════════════════════════
+       LAYER 3 — LANGGRAPH STATEGRAPH
+  ══════════════════════════════════════════ -->
+  <line x1="20" y1="240" x2="1420" y2="240" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+  <text x="28" y="254" font-size="9.5" fill="rgba(255,255,255,0.3)" font-weight="700" letter-spacing="2">LAYER 3 — LANGGRAPH STATEGRAPH  (supervisor.ts)</text>
+
+  <!-- Graph outer container -->
+  <rect x="28" y="262" width="1384" height="490" rx="18" fill="rgba(30,40,80,0.25)" stroke="url(#graphBorder)" stroke-width="2"/>
+  <text x="720" y="282" text-anchor="middle" font-size="11" font-weight="700" fill="rgba(147,197,253,0.7)" letter-spacing="1">StateGraph(AgentState)  ·  Annotation.Root({ userMessage, intent, next, agentOutput, error })  ·  .compile()</text>
+
+  <!-- START node -->
+  <circle cx="86" cy="400" r="30" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.45)" stroke-width="2" filter="url(#glow)"/>
+  <text x="86" y="396" text-anchor="middle" font-size="10" font-weight="700" fill="white">START</text>
+  <text x="86" y="410" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.5)">invoke()</text>
+
+  <!-- Arrow START → Supervisor -->
+  <line x1="116" y1="400" x2="178" y2="400" stroke="#fbbf24" stroke-width="2.5" marker-end="url(#arrowYellow)"/>
+  <text x="148" y="393" text-anchor="middle" font-size="8" fill="rgba(251,191,36,0.6)">addEdge</text>
+
+  <!-- SUPERVISOR node -->
+  <rect x="183" y="365" width="175" height="70" rx="14" fill="url(#supGrad)" filter="url(#softglow)"/>
+  <text x="270" y="391" text-anchor="middle" font-size="13" font-weight="700" fill="white">&#x1F9ED; SUPERVISOR</text>
+  <text x="270" y="408" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.85)">classifyIntent()</text>
+  <text x="270" y="422" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.65)">AI &#x2192; 1 of 11 intents</text>
+
+  <!-- AgentState mini-box -->
+  <rect x="183" y="445" width="175" height="82" rx="9" fill="rgba(30,64,175,0.35)" stroke="rgba(96,165,250,0.35)" stroke-width="1"/>
+  <text x="270" y="461" text-anchor="middle" font-size="9" font-weight="700" fill="#93c5fd">AgentState</text>
+  <text x="270" y="475" text-anchor="middle" font-size="8.5" fill="rgba(147,197,253,0.7)">userMessage : string</text>
+  <text x="270" y="488" text-anchor="middle" font-size="8.5" fill="rgba(147,197,253,0.7)">intent      : string</text>
+  <text x="270" y="501" text-anchor="middle" font-size="8.5" fill="rgba(147,197,253,0.7)">next        : string</text>
+  <text x="270" y="514" text-anchor="middle" font-size="8.5" fill="rgba(147,197,253,0.7)">agentOutput : unknown</text>
+
+  <!-- addConditionalEdges label -->
+  <text x="410" y="297" text-anchor="middle" font-size="9" fill="rgba(251,191,36,0.7)" font-style="italic">addConditionalEdges('supervisor', s &#x2192; s.next, { 11 routes })</text>
+
+  <!-- Fan arrows from supervisor to 11 nodes -->
+  <!-- We have 11 nodes stacked vertically; supervisor exits at x=358 -->
+  <line x1="358" y1="378" x2="440" y2="307" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2.5" marker-end="url(#arrowYellow)"/>
+  <line x1="358" y1="385" x2="440" y2="350" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2.5" marker-end="url(#arrowYellow)"/>
+  <line x1="358" y1="390" x2="440" y2="393" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2.5" marker-end="url(#arrowYellow)"/>
+  <line x1="358" y1="396" x2="440" y2="436" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2.5" marker-end="url(#arrowYellow)"/>
+  <line x1="358" y1="402" x2="440" y2="479" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2.5" marker-end="url(#arrowYellow)"/>
+  <line x1="358" y1="408" x2="440" y2="522" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2.5" marker-end="url(#arrowYellow)"/>
+  <line x1="358" y1="414" x2="440" y2="565" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2.5" marker-end="url(#arrowYellow)"/>
+  <line x1="358" y1="420" x2="440" y2="608" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2.5" marker-end="url(#arrowYellow)"/>
+  <line x1="358" y1="425" x2="440" y2="651" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2.5" marker-end="url(#arrowYellow)"/>
+  <line x1="358" y1="430" x2="440" y2="694" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2.5" marker-end="url(#arrowYellow)"/>
+  <line x1="358" y1="435" x2="440" y2="720" stroke="#fbbf24" stroke-width="1.5" stroke-dasharray="4,2.5" marker-end="url(#arrowYellow)"/>
+
+  <!-- ── 11 AGENT NODES ─────────────────────── -->
+  <!-- Each is 198x38, starting y=288, gap=43 -->
+
+  <!-- 1. price_search -->
+  <rect x="445" y="288" width="210" height="40" rx="10" fill="#0e7490" filter="url(#cardshadow)"/>
+  <text x="550" y="305" text-anchor="middle" font-size="11" font-weight="700" fill="white">&#x1F50D; Price Search</text>
+  <text x="550" y="320" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.75)">searchAcrossPlatforms() · Flipkart · Amazon</text>
+
+  <!-- 2. budget -->
+  <rect x="445" y="332" width="210" height="40" rx="10" fill="#047857" filter="url(#cardshadow)"/>
+  <text x="550" y="349" text-anchor="middle" font-size="11" font-weight="700" fill="white">&#x1F4B0; Budget Advisor</text>
+  <text x="550" y="364" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.75)">parseBudget() · AI intent extract · SQL filter</text>
+
+  <!-- 3. deal_hunter -->
+  <rect x="445" y="376" width="210" height="40" rx="10" fill="#b91c1c" filter="url(#cardshadow)"/>
+  <text x="550" y="393" text-anchor="middle" font-size="11" font-weight="700" fill="white">&#x1F3AF; Deal Hunter</text>
+  <text x="550" y="408" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.75)">getDealHunterResult() · watches goals</text>
+
+  <!-- 4. review -->
+  <rect x="445" y="420" width="210" height="40" rx="10" fill="#6d28d9" filter="url(#cardshadow)"/>
+  <text x="550" y="437" text-anchor="middle" font-size="11" font-weight="700" fill="white">&#x2B50; Review Aggregator</text>
+  <text x="550" y="452" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.75)">getProductReviews() · AI knowledge synth</text>
+
+  <!-- 5. predictor -->
+  <rect x="445" y="464" width="210" height="40" rx="10" fill="#be185d" filter="url(#cardshadow)"/>
+  <text x="550" y="481" text-anchor="middle" font-size="11" font-weight="700" fill="white">&#x1F4C9; Buy-Time Predictor</text>
+  <text x="550" y="496" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.75)">getBuyTimePrediction() · trend + AI forecast</text>
+
+  <!-- 6. report -->
+  <rect x="445" y="508" width="210" height="40" rx="10" fill="#b45309" filter="url(#cardshadow)"/>
+  <text x="550" y="525" text-anchor="middle" font-size="11" font-weight="700" fill="white">&#x1F4CA; Weekly Report</text>
+  <text x="550" y="540" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.75)">getLatestWeeklyReport() · AI summary</text>
+
+  <!-- ── NEW NODES (highlighted with badge) ── -->
+
+  <!-- 7. deal_dna — NEW -->
+  <rect x="445" y="552" width="210" height="40" rx="10" fill="#065f46" filter="url(#cardshadow)"/>
+  <rect x="445" y="552" width="210" height="40" rx="10" fill="none" stroke="#34d399" stroke-width="1.5"/>
+  <text x="550" y="569" text-anchor="middle" font-size="11" font-weight="700" fill="white">&#x1F4C8; Price Pulse</text>
+  <text x="550" y="584" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.75)">getDealDna() · monthly avg · AI insight</text>
+  <rect x="609" y="553" width="28" height="13" rx="4" fill="#34d399"/>
+  <text x="623" y="563" text-anchor="middle" font-size="7.5" font-weight="700" fill="#064e3b">NEW</text>
+
+  <!-- 8. coupon_stack — NEW -->
+  <rect x="445" y="596" width="210" height="40" rx="10" fill="#7c2d12" filter="url(#cardshadow)"/>
+  <rect x="445" y="596" width="210" height="40" rx="10" fill="none" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="550" y="613" text-anchor="middle" font-size="11" font-weight="700" fill="white">&#x1F3AB; Coupon Advisor</text>
+  <text x="550" y="628" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.75)">getCouponStack() · bank+wallet stacking</text>
+  <rect x="609" y="597" width="28" height="13" rx="4" fill="#fb923c"/>
+  <text x="623" y="607" text-anchor="middle" font-size="7.5" font-weight="700" fill="#431407">NEW</text>
+
+  <!-- 9. seasonal — NEW -->
+  <rect x="445" y="640" width="210" height="40" rx="10" fill="#0c4a6e" filter="url(#cardshadow)"/>
+  <rect x="445" y="640" width="210" height="40" rx="10" fill="none" stroke="#38bdf8" stroke-width="1.5"/>
+  <text x="550" y="657" text-anchor="middle" font-size="11" font-weight="700" fill="white">&#x1F4C5; Sale Season</text>
+  <text x="550" y="672" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.75)">getSeasonalAlerts() · Indian calendar</text>
+  <rect x="609" y="641" width="28" height="13" rx="4" fill="#38bdf8"/>
+  <text x="623" y="651" text-anchor="middle" font-size="7.5" font-weight="700" fill="#082f49">NEW</text>
+
+  <!-- 10. mood — NEW -->
+  <rect x="445" y="684" width="210" height="40" rx="10" fill="#701a75" filter="url(#cardshadow)"/>
+  <rect x="445" y="684" width="210" height="40" rx="10" fill="none" stroke="#e879f9" stroke-width="1.5"/>
+  <text x="550" y="701" text-anchor="middle" font-size="11" font-weight="700" fill="white">&#x1F60A; Mood Shopping</text>
+  <text x="550" y="716" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.75)">AI mood+budget extract · catalog query</text>
+  <rect x="609" y="685" width="28" height="13" rx="4" fill="#e879f9"/>
+  <text x="623" y="695" text-anchor="middle" font-size="7.5" font-weight="700" fill="#3b0764">NEW</text>
+
+  <!-- 11. general -->
+  <rect x="445" y="714" width="210" height="40" rx="10" fill="#1e3a5f" filter="url(#cardshadow)"/>
+  <text x="550" y="731" text-anchor="middle" font-size="11" font-weight="700" fill="white">&#x1F4AC; General Assistant</text>
+  <text x="550" y="746" text-anchor="middle" font-size="9"  fill="rgba(255,255,255,0.75)">catalog stats · freeform AI answer</text>
+
+  <!-- Arrows agents → END -->
+  <line x1="655" y1="308" x2="730" y2="400" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowGreen)"/>
+  <line x1="655" y1="352" x2="730" y2="403" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowGreen)"/>
+  <line x1="655" y1="396" x2="730" y2="406" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowGreen)"/>
+  <line x1="655" y1="440" x2="730" y2="409" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowGreen)"/>
+  <line x1="655" y1="484" x2="730" y2="412" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowGreen)"/>
+  <line x1="655" y1="528" x2="730" y2="415" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowGreen)"/>
+  <line x1="655" y1="572" x2="730" y2="418" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowGreen)"/>
+  <line x1="655" y1="616" x2="730" y2="421" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowGreen)"/>
+  <line x1="655" y1="660" x2="730" y2="424" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowGreen)"/>
+  <line x1="655" y1="704" x2="730" y2="427" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowGreen)"/>
+  <line x1="655" y1="734" x2="730" y2="430" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4,2" marker-end="url(#arrowGreen)"/>
+
+  <!-- END node -->
+  <circle cx="762" cy="418" r="30" fill="rgba(52,211,153,0.18)" stroke="#34d399" stroke-width="2" filter="url(#glow)"/>
+  <text x="762" y="414" text-anchor="middle" font-size="10" font-weight="700" fill="#34d399">END</text>
+  <text x="762" y="428" text-anchor="middle" font-size="8.5" fill="rgba(52,211,153,0.65)">agentOutput</text>
+
+  <!-- ── classifyIntent detail ── -->
+  <rect x="800" y="280" width="300" height="130" rx="13" fill="rgba(251,191,36,0.08)" stroke="rgba(251,191,36,0.25)" stroke-width="1.5"/>
+  <text x="950" y="300" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fbbf24">classifyIntent() — AI prompt</text>
+  <text x="810" y="318" font-size="9"   fill="rgba(251,191,36,0.8)">price_search · deal_hunter · review</text>
+  <text x="810" y="333" font-size="9"   fill="rgba(251,191,36,0.8)">budget  · predictor  · report</text>
+  <text x="810" y="348" font-size="9"   fill="rgba(251,191,36,0.8)">deal_dna  · coupon_stack  · seasonal</text>
+  <text x="810" y="363" font-size="9"   fill="rgba(251,191,36,0.8)">mood  · general</text>
+  <line x1="810" y1="372" x2="1095" y2="372" stroke="rgba(251,191,36,0.2)" stroke-width="1"/>
+  <text x="810" y="385" font-size="8.5" fill="rgba(251,191,36,0.55)" font-style="italic">AI outputs one word → supervisor sets s.next</text>
+  <text x="810" y="398" font-size="8.5" fill="rgba(251,191,36,0.55)" font-style="italic">→ addConditionalEdges fans to correct node</text>
+
+  <!-- ── parseBudget + findProduct helpers ── -->
+  <rect x="800" y="422" width="300" height="80" rx="12" fill="rgba(52,211,153,0.07)" stroke="rgba(52,211,153,0.22)" stroke-width="1.5"/>
+  <text x="950" y="441" text-anchor="middle" font-size="10" font-weight="700" fill="#34d399">Helper functions</text>
+  <text x="810" y="458" font-size="9" fill="rgba(52,211,153,0.75)">parseBudget()  "25k"&#x2192;25000 · "1 lakh"&#x2192;100000</text>
+  <text x="810" y="473" font-size="9" fill="rgba(52,211,153,0.75)">findProduct()  keyword SQL across name/cat/desc</text>
+  <text x="810" y="488" font-size="8.5" fill="rgba(52,211,153,0.5)" font-style="italic">shared by deal_dna · coupon_stack · seasonal · review · predictor</text>
+
+  <!-- ── What changed callout ── -->
+  <rect x="800" y="514" width="300" height="120" rx="12" fill="rgba(232,121,249,0.07)" stroke="rgba(232,121,249,0.25)" stroke-width="1.5"/>
+  <text x="950" y="534" text-anchor="middle" font-size="10.5" font-weight="700" fill="#e879f9">&#x1F195; What's New in v3</text>
+  <text x="810" y="552" font-size="9" fill="rgba(232,121,249,0.8)">&#x2022; Price Pulse (deal_dna) is now a graph node</text>
+  <text x="810" y="567" font-size="9" fill="rgba(232,121,249,0.8)">&#x2022; Coupon Advisor joins the StateGraph</text>
+  <text x="810" y="582" font-size="9" fill="rgba(232,121,249,0.8)">&#x2022; Sale Season is dynamically routed</text>
+  <text x="810" y="597" font-size="9" fill="rgba(232,121,249,0.8)">&#x2022; Mood Shopping integrated as agent node</text>
+  <text x="810" y="617" font-size="8.5" fill="rgba(232,121,249,0.5)" font-style="italic">Previously: separate REST calls outside the graph</text>
+  <text x="810" y="629" font-size="8.5" fill="rgba(232,121,249,0.5)" font-style="italic">Now: unified supervisor routing for all 11 agents</text>
+
+  <!-- ── Intent colour legend ── -->
+  <rect x="800" y="646" width="300" height="94" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+  <text x="950" y="665" text-anchor="middle" font-size="10" font-weight="700" fill="rgba(255,255,255,0.6)">Intent &#x2192; Badge Colour (UI)</text>
+  <g font-size="9" fill="rgba(255,255,255,0.55)">
+    <text x="810" y="681">price_search &#x2192; blue</text>
+    <text x="810" y="695">deal_hunter  &#x2192; red</text>
+    <text x="810" y="709">budget       &#x2192; green</text>
+    <text x="810" y="723">predictor    &#x2192; pink</text>
+    <text x="960" y="681">deal_dna    &#x2192; emerald</text>
+    <text x="960" y="695">coupon_stack &#x2192; orange</text>
+    <text x="960" y="709">seasonal     &#x2192; cyan</text>
+    <text x="960" y="723">mood         &#x2192; fuchsia</text>
+  </g>
+
+  <!-- ══════════════════════════════════════════
+       LAYER 4 — AI PROVIDER
+  ══════════════════════════════════════════ -->
+  <line x1="20" y1="764" x2="1420" y2="764" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+  <text x="28" y="778" font-size="9.5" fill="rgba(255,255,255,0.3)" font-weight="700" letter-spacing="2">LAYER 4 — AI / LLM PROVIDER  (provider.ts · generateResponse())</text>
+
+  <!-- Provider wrapper -->
+  <rect x="28" y="786" width="760" height="86" rx="13" fill="rgba(124,58,237,0.1)" stroke="rgba(167,139,250,0.25)" stroke-width="1.5"/>
+
+  <!-- generateResponse box -->
+  <rect x="42"  y="798" width="170" height="62" rx="9" fill="rgba(124,58,237,0.28)" stroke="rgba(167,139,250,0.45)" stroke-width="1"/>
+  <text x="127" y="818" text-anchor="middle" font-size="10.5" font-weight="700" fill="#c4b5fd">generateResponse()</text>
+  <text x="127" y="833" text-anchor="middle" font-size="9"    fill="rgba(196,181,253,0.7)">unified LLM wrapper</text>
+  <text x="127" y="847" text-anchor="middle" font-size="9"    fill="rgba(196,181,253,0.7)">prompt + system &#x2192; string</text>
+
+  <!-- Groq -->
+  <rect x="225" y="798" width="170" height="62" rx="9" fill="rgba(109,40,217,0.2)" stroke="rgba(167,139,250,0.35)" stroke-width="1"/>
+  <text x="310" y="822" text-anchor="middle" font-size="12">&#x26A1;</text>
+  <text x="310" y="836" text-anchor="middle" font-size="10.5" font-weight="700" fill="#a78bfa">Groq  (default)</text>
+  <text x="310" y="850" text-anchor="middle" font-size="8.5" fill="rgba(167,139,250,0.65)">llama3-8b · ultra-fast</text>
+
+  <!-- Claude -->
+  <rect x="408" y="798" width="170" height="62" rx="9" fill="rgba(37,99,235,0.2)" stroke="rgba(96,165,250,0.35)" stroke-width="1"/>
+  <text x="493" y="822" text-anchor="middle" font-size="12">&#x2736;</text>
+  <text x="493" y="836" text-anchor="middle" font-size="10.5" font-weight="700" fill="#93c5fd">Claude  (API)</text>
+  <text x="493" y="850" text-anchor="middle" font-size="8.5" fill="rgba(147,197,253,0.65)">claude-opus-4-8</text>
+
+  <!-- Ollama -->
+  <rect x="591" y="798" width="170" height="62" rx="9" fill="rgba(5,150,105,0.15)" stroke="rgba(52,211,153,0.35)" stroke-width="1"/>
+  <text x="676" y="822" text-anchor="middle" font-size="12">&#x1F999;</text>
+  <text x="676" y="836" text-anchor="middle" font-size="10.5" font-weight="700" fill="#34d399">Ollama  (local)</text>
+  <text x="676" y="850" text-anchor="middle" font-size="8.5" fill="rgba(52,211,153,0.65)">localhost:11434</text>
+
+  <!-- AI call arrow from graph -->
+  <line x1="762" y1="448" x2="400" y2="786" stroke="rgba(167,139,250,0.45)" stroke-width="1.5" stroke-dasharray="5,3" marker-end="url(#arrowPurple)"/>
+  <text x="560" y="640" font-size="9" fill="rgba(167,139,250,0.5)" font-style="italic" transform="rotate(-42,560,640)">all 11 nodes call generateResponse()</text>
+
+  <!-- ══════════════════════════════════════════
+       LAYER 5 — DATA & INTEGRATION
+  ══════════════════════════════════════════ -->
+  <line x1="20" y1="884" x2="1420" y2="884" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+  <text x="28" y="898" font-size="9.5" fill="rgba(255,255,255,0.3)" font-weight="700" letter-spacing="2">LAYER 5 — DATA &amp; INTEGRATION</text>
+
+  <!-- SQLite -->
+  <rect x="28"  y="908" width="210" height="92" rx="12" fill="rgba(37,99,235,0.1)"  stroke="rgba(96,165,250,0.25)"  stroke-width="1"/>
+  <text x="133" y="928" text-anchor="middle" font-size="11.5" font-weight="700" fill="#93c5fd">&#x1F5C4; SQLite</text>
+  <text x="133" y="944" text-anchor="middle" font-size="9" fill="rgba(147,197,253,0.65)">better-sqlite3 · db.ts</text>
+  <text x="133" y="958" text-anchor="middle" font-size="9" fill="rgba(147,197,253,0.6)">products · price_history · users</text>
+  <text x="133" y="972" text-anchor="middle" font-size="9" fill="rgba(147,197,253,0.6)">favorites · alerts · deal_goals</text>
+  <text x="133" y="986" text-anchor="middle" font-size="9" fill="rgba(147,197,253,0.6)">weekly_reports · product_reviews</text>
+
+  <!-- WebSocket -->
+  <rect x="248" y="908" width="210" height="92" rx="12" fill="rgba(5,150,105,0.1)"  stroke="rgba(52,211,153,0.25)"  stroke-width="1"/>
+  <text x="353" y="928" text-anchor="middle" font-size="11.5" font-weight="700" fill="#34d399">&#x1F4E1; WebSocket</text>
+  <text x="353" y="944" text-anchor="middle" font-size="9" fill="rgba(52,211,153,0.65)">ws library</text>
+  <text x="353" y="958" text-anchor="middle" font-size="9" fill="rgba(52,211,153,0.6)">price_drop events · real-time</text>
+  <text x="353" y="972" text-anchor="middle" font-size="9" fill="rgba(52,211,153,0.6)">useWebSocket() hook</text>
+  <text x="353" y="986" text-anchor="middle" font-size="9" fill="rgba(52,211,153,0.6)">Browser Notification API</text>
+
+  <!-- Alert Bot -->
+  <rect x="468" y="908" width="210" height="92" rx="12" fill="rgba(56,189,248,0.1)"  stroke="rgba(56,189,248,0.25)"  stroke-width="1"/>
+  <text x="573" y="928" text-anchor="middle" font-size="11.5" font-weight="700" fill="#38bdf8">&#x1F916; Alert Bot</text>
+  <text x="573" y="944" text-anchor="middle" font-size="9" fill="rgba(56,189,248,0.65)">Telegraf · alertBot.ts</text>
+  <text x="573" y="958" text-anchor="middle" font-size="9" fill="rgba(56,189,248,0.6)">/deals /search /watch /goals</text>
+  <text x="573" y="972" text-anchor="middle" font-size="9" fill="rgba(56,189,248,0.6)">sendAlertBotMessage()</text>
+  <text x="573" y="986" text-anchor="middle" font-size="9" fill="rgba(56,189,248,0.6)">tg_${userId} mapping</text>
+
+  <!-- JWT Auth -->
+  <rect x="688" y="908" width="210" height="92" rx="12" fill="rgba(217,119,6,0.1)"   stroke="rgba(251,146,60,0.25)"  stroke-width="1"/>
+  <text x="793" y="928" text-anchor="middle" font-size="11.5" font-weight="700" fill="#fb923c">&#x1F510; JWT Auth</text>
+  <text x="793" y="944" text-anchor="middle" font-size="9" fill="rgba(251,146,60,0.65)">jsonwebtoken · bcryptjs</text>
+  <text x="793" y="958" text-anchor="middle" font-size="9" fill="rgba(251,146,60,0.6)">30-day tokens · localStorage</text>
+  <text x="793" y="972" text-anchor="middle" font-size="9" fill="rgba(251,146,60,0.6)">requireAuth / optionalAuth</text>
+  <text x="793" y="986" text-anchor="middle" font-size="9" fill="rgba(251,146,60,0.6)">avatar_initials · user dropdown</text>
+
+  <!-- Platform Search -->
+  <rect x="908" y="908" width="210" height="92" rx="12" fill="rgba(124,58,237,0.1)"  stroke="rgba(167,139,250,0.25)" stroke-width="1"/>
+  <text x="1013" y="928" text-anchor="middle" font-size="11.5" font-weight="700" fill="#a78bfa">&#x1F6D2; Platform Search</text>
+  <text x="1013" y="944" text-anchor="middle" font-size="9" fill="rgba(167,139,250,0.65)">platformSearch.ts</text>
+  <text x="1013" y="958" text-anchor="middle" font-size="9" fill="rgba(167,139,250,0.6)">Amazon · Flipkart · Meesho</text>
+  <text x="1013" y="972" text-anchor="middle" font-size="9" fill="rgba(167,139,250,0.6)">auto-adds to catalog</text>
+  <text x="1013" y="986" text-anchor="middle" font-size="9" fill="rgba(167,139,250,0.6)">price_history tracking</text>
+
+  <!-- Deployment -->
+  <rect x="1128" y="908" width="284" height="92" rx="12" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.12)" stroke-width="1"/>
+  <text x="1270" y="928" text-anchor="middle" font-size="11.5" font-weight="700" fill="rgba(255,255,255,0.6)">&#x2601; Deployment</text>
+  <text x="1138" y="946" font-size="9.5" font-weight="600" fill="rgba(255,255,255,0.5)">Frontend</text>
+  <text x="1138" y="960" font-size="9" fill="rgba(255,255,255,0.35)">&#x25B2; Vercel · React 18 · Vite · Tailwind</text>
+  <text x="1138" y="976" font-size="9.5" font-weight="600" fill="rgba(255,255,255,0.5)">Backend</text>
+  <text x="1138" y="990" font-size="9" fill="rgba(255,255,255,0.35)">&#x1F682; Railway · Node 18 · Express · SQLite</text>
+
+  <!-- ══════════════════════════════════════════
+       RIGHT PANEL — FRONTEND RENDERING
+  ══════════════════════════════════════════ -->
+  <rect x="1120" y="262" width="300" height="490" rx="15" fill="rgba(255,255,255,0.04)" stroke="rgba(255,255,255,0.1)" stroke-width="1.5"/>
+  <text x="1270" y="282" text-anchor="middle" font-size="10.5" font-weight="700" fill="rgba(255,255,255,0.55)">Frontend Result Renderers</text>
+  <text x="1270" y="296" text-anchor="middle" font-size="8.5" fill="rgba(255,255,255,0.3)">AgentsPage.tsx · SupervisorTab</text>
+
+  <!-- Renderer rows -->
+  <g font-size="9">
+    <!-- price_search -->
+    <rect x="1132" y="306" width="276" height="32" rx="7" fill="rgba(14,116,144,0.25)" stroke="rgba(14,116,144,0.5)" stroke-width="1"/>
+    <text x="1144" y="322" fill="#67e8f9" font-weight="600">price_search</text>
+    <text x="1144" y="333" fill="rgba(103,232,249,0.6)">Platform rows · product name + price</text>
+
+    <!-- budget -->
+    <rect x="1132" y="342" width="276" height="32" rx="7" fill="rgba(4,120,87,0.25)" stroke="rgba(4,120,87,0.5)" stroke-width="1"/>
+    <text x="1144" y="358" fill="#6ee7b7" font-weight="600">budget</text>
+    <text x="1144" y="369" fill="rgba(110,231,183,0.6)">Pills: product type · budget · use case · product list</text>
+
+    <!-- deal_hunter / review / predictor / report / general (text) -->
+    <rect x="1132" y="378" width="276" height="32" rx="7" fill="rgba(71,85,105,0.3)" stroke="rgba(148,163,184,0.3)" stroke-width="1"/>
+    <text x="1144" y="394" fill="rgba(255,255,255,0.65)" font-weight="600">deal_hunter · review · predictor · report · general</text>
+    <text x="1144" y="405" fill="rgba(255,255,255,0.35)">AI text paragraph · catch-all renderer</text>
+
+    <!-- deal_dna — NEW -->
+    <rect x="1132" y="414" width="276" height="40" rx="7" fill="rgba(6,95,70,0.3)" stroke="#34d399" stroke-width="1.2"/>
+    <text x="1144" y="430" fill="#34d399" font-weight="700">deal_dna  &#x1F195;</text>
+    <text x="1144" y="442" fill="rgba(52,211,153,0.65)">AI insight · 3-stat grid (low/avg/high)</text>
+    <text x="1144" y="452" fill="rgba(52,211,153,0.65)">Best month pills · savings opportunity</text>
+
+    <!-- coupon_stack — NEW -->
+    <rect x="1132" y="458" width="276" height="40" rx="7" fill="rgba(124,45,18,0.3)" stroke="#fb923c" stroke-width="1.2"/>
+    <text x="1144" y="474" fill="#fb923c" font-weight="700">coupon_stack  &#x1F195;</text>
+    <text x="1144" y="486" fill="rgba(251,146,60,0.65)">Effective price hero · total saving</text>
+    <text x="1144" y="496" fill="rgba(251,146,60,0.65)">Offer rows: type badge · stackable tag</text>
+
+    <!-- seasonal — NEW -->
+    <rect x="1132" y="502" width="276" height="40" rx="7" fill="rgba(12,74,110,0.3)" stroke="#38bdf8" stroke-width="1.2"/>
+    <text x="1144" y="518" fill="#38bdf8" font-weight="700">seasonal  &#x1F195;</text>
+    <text x="1144" y="530" fill="rgba(56,189,248,0.65)">Live sale pulse badge · seasonal tip</text>
+    <text x="1144" y="540" fill="rgba(56,189,248,0.65)">Upcoming events: days-until · discount%</text>
+
+    <!-- mood — NEW -->
+    <rect x="1132" y="546" width="276" height="40" rx="7" fill="rgba(112,26,117,0.3)" stroke="#e879f9" stroke-width="1.2"/>
+    <text x="1144" y="562" fill="#e879f9" font-weight="700">mood  &#x1F195;</text>
+    <text x="1144" y="574" fill="rgba(232,121,249,0.65)">Warm AI intro · 2-col product grid</text>
+    <text x="1144" y="584" fill="rgba(232,121,249,0.65)">Name · price · discount% · platform</text>
+
+    <!-- not-found fallback -->
+    <rect x="1132" y="590" width="276" height="28" rx="7" fill="rgba(120,53,15,0.2)" stroke="rgba(251,191,36,0.3)" stroke-width="1"/>
+    <text x="1144" y="606" fill="rgba(251,191,36,0.7)" font-weight="600">not-found (any agent)</text>
+    <text x="1144" y="616" fill="rgba(251,191,36,0.5)">Amber tip card · "use AI Search first"</text>
+  </g>
+
+  <!-- ══════════════════════════════════════════
+       FOOTER / LEGEND
+  ══════════════════════════════════════════ -->
+  <rect x="28" y="1010" width="1384" height="40" rx="10" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+  <!-- Legend items -->
+  <line x1="50"  y1="1030" x2="80"  y2="1030" stroke="#fbbf24" stroke-width="2" stroke-dasharray="4,2" marker-end="url(#arrowYellow)"/>
+  <text x="86"  y="1034" font-size="9" fill="rgba(255,255,255,0.4)">conditional route (AI-classified)</text>
+  <line x1="260" y1="1030" x2="290" y2="1030" stroke="#34d399" stroke-width="2" stroke-dasharray="4,2" marker-end="url(#arrowGreen)"/>
+  <text x="296" y="1034" font-size="9" fill="rgba(255,255,255,0.4)">output &#x2192; END</text>
+  <line x1="420" y1="1030" x2="450" y2="1030" stroke="rgba(167,139,250,0.6)" stroke-width="2" stroke-dasharray="5,3" marker-end="url(#arrowPurple)"/>
+  <text x="456" y="1034" font-size="9" fill="rgba(255,255,255,0.4)">AI inference call</text>
+  <line x1="580" y1="1030" x2="610" y2="1030" stroke="rgba(255,255,255,0.3)" stroke-width="2" marker-end="url(#arrowWhite)"/>
+  <text x="616" y="1034" font-size="9" fill="rgba(255,255,255,0.4)">HTTP / REST</text>
+  <rect x="710" y="1022" width="12" height="12" rx="2" fill="none" stroke="#34d399" stroke-width="1.5"/>
+  <text x="728" y="1034" font-size="9" fill="rgba(255,255,255,0.4)">= new node added in v3 (previously standalone REST call)</text>
+  <text x="1100" y="1034" text-anchor="end" font-size="9" fill="rgba(255,255,255,0.2)">DealSense v3 · @langchain/langgraph · 11 agents · 2026</text>
+  <text x="1412" y="1034" text-anchor="end" font-size="9" fill="rgba(255,255,255,0.2)">supervisor.ts · provider.ts · db.ts</text>
+</svg>

@@ -4,7 +4,7 @@ import { Product } from '../../models/types';
 import { broadcastNotification } from '../websocket';
 
 // ── Tool definitions ─────────────────────────────────────────────────────────
-// Use plain object arrays to avoid SDK-version type conflicts
+// Use plain object arrays  to avoid SDK-version type conflicts
 const TOOL_DEFS = [
   {
     name: 'check_platform_price',

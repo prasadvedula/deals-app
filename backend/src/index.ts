@@ -1,3 +1,4 @@
+import './polyfill';
 import 'dotenv/config';
 import http from 'http';
 import app from './app';
@@ -7,6 +8,7 @@ import { getDb } from './database/db';
 import { AI_PROVIDER, providerInfo } from './services/ai/provider';
 import { indexProductEmbeddings } from './services/ai/rag';
 import { seed } from './utils/seed';
+import { initTelegramBot } from './services/telegramBot';
 
 const PORT = process.env.PORT || 3001;
 
@@ -21,6 +23,7 @@ async function main() {
   const server = http.createServer(app);
   initWebSocket(server);
   startScheduler();
+  initTelegramBot();
 
   server.listen(PORT, async () => {
     console.log(`[Server] Running on http://localhost:${PORT}`);

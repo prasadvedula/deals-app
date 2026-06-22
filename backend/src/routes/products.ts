@@ -1,43 +1,45 @@
 import { Router, Request, Response } from 'express';
 import { getDb } from '../database/db';
 import { Product, PriceHistory, CrossPlatformPrice } from '../models/types';
+import { getDealDna } from '../services/agents/dealDna';
+import { getSeasonalAlerts } from '../services/agents/seasonalPatterns';
+import { getCouponStack } from '../services/agents/couponAdvisor';
 
 const router = Router();
 
 // GET /api/products - list with filters
 router.get('/', (req: Request, res: Response) => {
   const db = getDb();
-  const { category, sort = 'trending', limit = '20', offset = '0' } = req.query;
+  const { category, search, sort = 'trending', limit = '20', offset = '0' } = req.query;
 
-  let query = 'SELECT * FROM products WHERE 1=1';
+  let where = 'WHERE 1=1';
   const params: (string | number)[] = [];
 
   if (category) {
-    query += ' AND category = ?';
+    where += ' AND category = ?';
     params.push(category as string);
   }
-
-  switch (sort) {
-    case 'price_asc':
-      query += ' ORDER BY current_price ASC';
-      break;
-    case 'price_desc':
-      query += ' ORDER BY current_price DESC';
-      break;
-    case 'discount':
-      query += ' ORDER BY ((original_price - current_price) / original_price) DESC';
-      break;
-    default:
-      query += ' ORDER BY trending_score DESC';
+  if (search) {
+    where += ' AND (LOWER(name) LIKE LOWER(?) OR LOWER(description) LIKE LOWER(?))';
+    params.push(`%${search}%`, `%${search}%`);
   }
 
-  query += ' LIMIT ? OFFSET ?';
-  params.push(parseInt(limit as string), parseInt(offset as string));
+  let orderBy: string;
+  switch (sort) {
+    case 'price_asc': orderBy = 'current_price ASC'; break;
+    case 'price_desc': orderBy = 'current_price DESC'; break;
+    case 'discount':  orderBy = '((original_price - current_price) / original_price) DESC'; break;
+    case 'newest':    orderBy = 'created_at DESC'; break;
+    default:          orderBy = 'trending_score DESC';
+  }
 
-  const products = db.prepare(query).all(...params) as Product[];
-  const total = (db.prepare('SELECT COUNT(*) as count FROM products' + (category ? ' WHERE category = ?' : '')).get(...(category ? [category] : [])) as { count: number }).count;
+  const limitN = parseInt(limit as string);
+  const offsetN = parseInt(offset as string);
+  const products = db.prepare(`SELECT * FROM products ${where} ORDER BY ${orderBy} LIMIT ? OFFSET ?`)
+    .all(...params, limitN, offsetN) as Product[];
+  const total = (db.prepare(`SELECT COUNT(*) as count FROM products ${where}`).get(...params) as { count: number }).count;
 
-  res.json({ products, total, limit: parseInt(limit as string), offset: parseInt(offset as string) });
+  res.json({ products, total, limit: limitN, offset: offsetN });
 });
 
 // GET /api/products/best-deals - products with biggest price drop vs 30-day high
@@ -128,6 +130,41 @@ router.get('/:id/cross-prices', (req: Request, res: Response) => {
     'SELECT * FROM cross_platform_prices WHERE product_id = ? ORDER BY price ASC'
   ).all(req.params.id) as CrossPlatformPrice[];
   res.json(prices);
+});
+
+// GET /api/products/:id/deal-dna — price pattern analysis
+router.get('/:id/deal-dna', async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) { res.status(400).json({ error: 'invalid id' }); return; }
+  try {
+    res.json(await getDealDna(id));
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
+});
+
+// GET /api/products/:id/seasonal — seasonal sale alerts
+router.get('/:id/seasonal', (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) { res.status(400).json({ error: 'invalid id' }); return; }
+  const db = getDb();
+  const product = db.prepare('SELECT category FROM products WHERE id = ?').get(id) as { category: string } | undefined;
+  if (!product) { res.status(404).json({ error: 'Product not found' }); return; }
+  res.json(getSeasonalAlerts(id, product.category));
+});
+
+// GET /api/products/:id/coupons — coupon stack for this product
+router.get('/:id/coupons', async (req: Request, res: Response) => {
+  const id = parseInt(req.params.id);
+  if (isNaN(id)) { res.status(400).json({ error: 'invalid id' }); return; }
+  const db = getDb();
+  const product = db.prepare('SELECT * FROM products WHERE id = ?').get(id) as Product | undefined;
+  if (!product) { res.status(404).json({ error: 'Product not found' }); return; }
+  try {
+    res.json(await getCouponStack(id, product.name, product.platform, product.current_price));
+  } catch (err) {
+    res.status(500).json({ error: String(err) });
+  }
 });
 
 export default router;

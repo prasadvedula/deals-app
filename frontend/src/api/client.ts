@@ -1,10 +1,18 @@
-// In production VITE_API_URL = https://your-backend.railway.app
-// In dev, empty string falls through to Vite proxy on /api
-const BASE_URL = (import.meta.env.VITE_API_URL ?? '') + '/api';
+// Strip BOM that some editors/tools prepend to env var values
+const BASE_URL = (import.meta.env.VITE_API_URL ?? '').replace(/^﻿/, '') + '/api';
+
+function getToken(): string | null {
+  return localStorage.getItem('dealsapp_token');
+}
 
 async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const token = getToken();
   const res = await fetch(`${BASE_URL}${path}`, {
-    headers: { 'Content-Type': 'application/json', ...options?.headers },
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...options?.headers,
+    },
     ...options,
   });
 
@@ -16,7 +24,20 @@ async function request<T>(path: string, options?: RequestInit): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+export interface AuthUser {
+  id: number; name: string; email: string; avatar_initials: string; created_at: string;
+}
+
 export const api = {
+  // Auth
+  login:    (email: string, password: string) =>
+    request<{ token: string; user: AuthUser }>('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) }),
+  register: (name: string, email: string, password: string) =>
+    request<{ token: string; user: AuthUser }>('/auth/register', { method: 'POST', body: JSON.stringify({ name, email, password }) }),
+  me:       () => getToken()
+    ? request<{ user: AuthUser }>('/auth/me')
+    : Promise.resolve(null),
+
   // Products
   getProducts: (params?: Record<string, string>) => {
     const qs = params ? '?' + new URLSearchParams(params).toString() : '';
@@ -64,10 +85,39 @@ export const api = {
       method: 'POST',
       body: JSON.stringify({ query }),
     }),
+  platformSearch: (query: string) =>
+    request<{ results: { platform: string; products: unknown[] }[]; totalProducts: number }>('/ai/platform-search', {
+      method: 'POST',
+      body: JSON.stringify({ query }),
+    }),
   getRecommendations: () =>
     request<{ products: import('../types').Product[]; reasoning: string }>('/ai/recommendations'),
   triggerMonitor: () => request('/ai/monitor', { method: 'POST' }),
   getAgentTasks: () => request<import('../types').AgentTask[]>('/ai/agent-tasks'),
+
+  // Agents
+  agentChat:    (message: string) => request<{ intent: string; output: unknown; error?: string }>('/agents/chat', { method: 'POST', body: JSON.stringify({ message }) }),
+  getGoals:     () => request<unknown[]>('/agents/goals'),
+  createGoal:   (query: string, max_price?: number, platforms?: string[]) => request('/agents/goals', { method: 'POST', body: JSON.stringify({ query, max_price, platforms }) }),
+  dismissGoal:  (id: number) => request(`/agents/goals/${id}`, { method: 'DELETE' }),
+  getReviews:   (productId: number) => request<unknown>(`/agents/reviews/${productId}`),
+  getPredict:   (productId: number) => request<unknown>(`/agents/predict/${productId}`),
+  getReport:    () => request<unknown>('/agents/report'),
+  genReport:    () => request<unknown>('/agents/report/generate', { method: 'POST' }),
+
+  // Deal DNA, Seasonal, Coupons
+  getDealDna:   (productId: number) => request<unknown>(`/products/${productId}/deal-dna`),
+  getSeasonal:  (productId: number) => request<unknown>(`/products/${productId}/seasonal`),
+  getCoupons:   (productId: number) => request<unknown>(`/products/${productId}/coupons`),
+
+  // Mood Search
+  moodSearch: (mood: string, budget?: number) =>
+    request<{ mood: string; moodCategory: string; reasoning: string; products: import('../types').Product[] }>(
+      '/ai/mood-search', { method: 'POST', body: JSON.stringify({ mood, budget }) }
+    ),
+
+  // Seasonal banner (site-wide)
+  getSeasonalBanner: () => request<{ active: unknown; comingSoon: unknown; bannerText: string; urgency: 'live' | 'soon' | 'none' }>('/ai/seasonal'),
 
   // Import
   importFromUrl: (url: string, platform: string) =>

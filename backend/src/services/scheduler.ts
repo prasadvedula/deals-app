@@ -1,5 +1,7 @@
 import cron from 'node-cron';
 import { monitorAllTrendingProducts } from './agents/priceMonitor';
+import { runAllGoals } from './agents/dealHunter';
+import { generateWeeklyReport } from './agents/weeklyReport';
 import { getDb } from '../database/db';
 
 let schedulerRunning = false;
@@ -21,6 +23,18 @@ export function startScheduler(): void {
   // Update trending scores every hour
   cron.schedule('0 * * * *', () => {
     updateTrendingScores();
+  });
+
+  // Run autonomous deal goals every 30 min (offset 15 min from price monitor)
+  cron.schedule('15,45 * * * *', async () => {
+    try { await runAllGoals(); }
+    catch (err) { console.error('[Scheduler] Deal hunter error:', err); }
+  });
+
+  // Generate weekly report every Monday at 8am
+  cron.schedule('0 8 * * 1', async () => {
+    try { await generateWeeklyReport(); }
+    catch (err) { console.error('[Scheduler] Weekly report error:', err); }
   });
 
   console.log('[Scheduler] Price monitoring scheduler started (every 30 min)');

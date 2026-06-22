@@ -22,10 +22,12 @@ export function getDb(): Database.Database {
 }
 
 function runMigrations(db: Database.Database): void {
-  // Add embedding column if it doesn't exist yet
   const cols = db.prepare("PRAGMA table_info(products)").all() as { name: string }[];
   if (!cols.some((c) => c.name === 'embedding')) {
     db.exec('ALTER TABLE products ADD COLUMN embedding TEXT');
+  }
+  if (!cols.some((c) => c.name === 'import_source')) {
+    db.exec("ALTER TABLE products ADD COLUMN import_source TEXT");
   }
 }
 
@@ -94,6 +96,55 @@ function initSchema(db: Database.Database): void {
       result TEXT,
       created_at TEXT DEFAULT (datetime('now')),
       completed_at TEXT
+    );
+
+    CREATE TABLE IF NOT EXISTS deal_goals (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id TEXT NOT NULL DEFAULT 'default_user',
+      query TEXT NOT NULL,
+      max_price REAL,
+      target_platforms TEXT DEFAULT '[]',
+      status TEXT DEFAULT 'watching',
+      best_match_id INTEGER REFERENCES products(id) ON DELETE SET NULL,
+      best_price REAL,
+      notes TEXT DEFAULT '',
+      last_checked TEXT,
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS product_reviews (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+      platform TEXT NOT NULL,
+      rating REAL,
+      review_count INTEGER DEFAULT 0,
+      pros TEXT DEFAULT '[]',
+      cons TEXT DEFAULT '[]',
+      summary TEXT DEFAULT '',
+      trust_score REAL DEFAULT 0,
+      fetched_at TEXT DEFAULT (datetime('now')),
+      UNIQUE(product_id, platform)
+    );
+
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT NOT NULL UNIQUE,
+      password_hash TEXT NOT NULL,
+      avatar_initials TEXT DEFAULT '',
+      created_at TEXT DEFAULT (datetime('now'))
+    );
+
+    CREATE TABLE IF NOT EXISTS weekly_reports (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      week_start TEXT NOT NULL,
+      total_products INTEGER DEFAULT 0,
+      price_drops INTEGER DEFAULT 0,
+      new_products INTEGER DEFAULT 0,
+      top_deals TEXT DEFAULT '[]',
+      category_insights TEXT DEFAULT '[]',
+      ai_summary TEXT DEFAULT '',
+      generated_at TEXT DEFAULT (datetime('now'))
     );
 
     CREATE VIRTUAL TABLE IF NOT EXISTS products_fts USING fts5(

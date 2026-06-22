@@ -10,8 +10,11 @@ export function useWebSocket(onMessage: (msg: WSMessage) => void) {
   const reconnectTimer = useRef<ReturnType<typeof setTimeout>>();
 
   const connect = useCallback(() => {
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const ws = new WebSocket(`${protocol}//${window.location.host}/ws`);
+    const apiUrl = (import.meta.env.VITE_API_URL ?? '').replace(/^﻿/, '').replace(/\/$/, '');
+    const wsUrl = apiUrl
+      ? apiUrl.replace(/^https/, 'wss').replace(/^http/, 'ws').replace(/\/api$/, '') + '/ws'
+      : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
+    const ws = new WebSocket(wsUrl);
     wsRef.current = ws;
 
     ws.onopen = () => console.log('[WS] Connected');

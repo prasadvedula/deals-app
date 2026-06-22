@@ -32,9 +32,11 @@ export interface PlatformSearchResult {
 // ── Category detection ────────────────────────────────────────────────────────
 type Category = 'Beauty' | 'Electronics' | 'Clothing' | 'Footwear' | 'Kitchen' | 'Home' | 'Sports' | 'Health';
 
+const ELECTRONICS_BRANDS_RE = /\b(lg|samsung|dell|hp|lenovo|asus|acer|apple|sony|panasonic|philips|bosch|siemens|whirlpool|godrej|voltas|daikin|hitachi|crompton|havells|bajaj|usha|orient|xiaomi|mi|oneplus|realme|oppo|vivo|boat|jbl|bose|logitech|canon|nikon|intel|amd|nvidia|dyson)\b/i;
+
 const CATEGORY_RULES: Array<{ re: RegExp; cat: Category }> = [
   { re: /lotion|cream|serum|moistur|sunscreen|face|skin|hair|shampoo|conditioner|makeup|lip|eye|nail|cleanser|toner|scrub|mask|foundation|kajal|kohl|perfume|fragrance|deodorant|deo|body wash|body oil|body lotion|body spray|body gel|beauty|cosmetic|nykaa|\boil\b|gel|spray|relax|mamaearth|himalaya|plum|nykaa|biotique|wow skin|derma/i, cat: 'Beauty' },
-  { re: /phone|mobile|laptop|earbuds|headphone|speaker|tablet|camera|tv|television|smartwatch|charger|cable|bluetooth|keyboard|mouse|monitor|router|electronic/i, cat: 'Electronics' },
+  { re: /phone|mobile|laptop|earbuds|headphone|speaker|tablet|camera|tv|television|smartwatch|charger|cable|bluetooth|keyboard|mouse|monitor|router|electronic|power.?bank|powerbank|battery.?pack|portable.?charger|hard.?disk|ssd|pen.?drive|pendrive|usb.?hub|adapter|inverter|ups|gaming|remote.?control|remote|set.?top.?box|air.?purifier|air.?condition|refrigerator|fridge|washing.?machine|microwave|printer|scanner|projector|drone|tripod|memory.?card|extension.?cord|plug/i, cat: 'Electronics' },
   { re: /shirt|jeans|dress|kurta|kurti|saree|lehenga|salwar|dupatta|ethnic|fashion|cloth|wear|apparel|top|bottom|skirt|blazer|trouser|pant|hoodie|tshirt|t-shirt/i, cat: 'Clothing' },
   { re: /shoe|sandal|sneaker|heel|boot|chappal|slipper|footwear|loafer|runner/i, cat: 'Footwear' },
   { re: /cooker|mixer|grinder|juicer|flask|bottle|container|cookware|pan|tawa|kadai|pressure|kitchen|utensil/i, cat: 'Kitchen' },
@@ -47,6 +49,8 @@ function detectCategory(query: string): Category {
   for (const { re, cat } of CATEGORY_RULES) {
     if (re.test(query)) return cat;
   }
+  // If query mentions a known electronics brand (e.g. "lg remote", "samsung case"), classify as Electronics
+  if (ELECTRONICS_BRANDS_RE.test(query)) return 'Electronics';
   return 'Beauty'; // default for ambiguous queries
 }
 
@@ -143,7 +147,12 @@ function platformUrl(platform: string, query: string): string {
 // Used when AI returns non-JSON (refusal, explanation text, etc.)
 function generateFallbackProducts(query: string, platform: string, count: number): PlatformProduct[] {
   const category = detectCategory(query);
-  const brands = BRANDS[category] ?? BRANDS.Beauty;
+  const queryBrand = query.match(BRAND_IN_QUERY_RE)?.[0];
+
+  // If the query already names a brand (e.g. "dell laptop charger"), use only that brand
+  const brands = queryBrand
+    ? Array.from({ length: count }, () => ({ brand: queryBrand, priceRange: [500, 5000] as [number, number] }))
+    : BRANDS[category] ?? BRANDS.Beauty;
 
   // Pick `count` distinct brands (wrap if needed)
   const selected = Array.from({ length: count }, (_, i) => brands[i % brands.length]);
@@ -193,26 +202,36 @@ const PLATFORM_FOCUS: Record<string, string> = {
   'Nykaa':        'skincare, makeup, haircare, wellness, fragrances',
 };
 
+// Brands that, when present in a query, should stay as-is (don't prepend an Indian brand)
+const BRAND_IN_QUERY_RE = /\b(dell|hp|lenovo|asus|acer|apple|samsung|sony|lg|xiaomi|mi\b|oneplus|realme|oppo|vivo|jbl|bose|sennheiser|logitech|corsair|razer|intel|amd|nvidia|canon|nikon|boat\b|anker|belkin|philips|panasonic|whirlpool|bajaj|havells|crompton|usha|orient|godrej|lg|voltas|daikin|hitachi|bosch|siemens|dyson|nike|adidas|puma|reebok|levi|h&m|zara|uniqlo|woodland|bata|campus|patanjali|himalaya|dabur|colgate|lifebuoy|dove|nivea|loreal|lakme|pond|garnier)\b/i;
+
 // ── Product generation ────────────────────────────────────────────────────────
-// Ollama (qwen2.5:3b) consistently hallucinates nonsensical brand names
-// ("Akhada", "AromaWorld", "Prajna", "Dr. Pepper", "Zara")  — skip AI entirely
-// for Ollama and use the deterministic generator which has real Indian brands.
-// For Claude (larger model), try AI first then fall back.
 async function searchOnePlatform(query: string, platform: string, count = 3): Promise<PlatformProduct[]> {
   if (AI_PROVIDER === 'ollama') {
     return generateFallbackProducts(query, platform, count);
   }
 
-  // Claude path — try AI generation
   const focus = PLATFORM_FOCUS[platform] ?? 'general products';
   const category = detectCategory(query);
+  const brandMatch = query.match(BRAND_IN_QUERY_RE);
+  const queryBrand = brandMatch ? brandMatch[0] : null;
+
+  const nameInstruction = queryBrand
+    ? `Product names must use the "${queryBrand}" brand with realistic model/variant names (e.g., "${queryBrand} 65W USB-C Charger", "${queryBrand} ProSupport Adapter"). Do NOT prepend any other brand.`
+    : `Product names must start with a real Indian brand from this list: ${getBrandsForCategory(category).join(', ')}`;
+
+  const nameExample = queryBrand
+    ? `"${queryBrand} <realistic model/variant>"`
+    : `"<IndianBrand> <variant of: ${query}>"`;
+
   const system = `You output ONLY valid JSON arrays. No explanations. No apologies. No markdown. Raw JSON only.`;
-  const prompt = `Output a JSON array of ${count} products matching "${query}" sold on ${platform} (${focus}).
-RULES: output ONLY the JSON array. Prices in INR numbers only (no ₹ symbol). Use real Indian brand names only.
+  const prompt = `Output a JSON array of ${count} realistic products for the search "${query}" on ${platform} (${focus}).
+RULES:
+- Output ONLY the JSON array, nothing else
+- Prices in INR numbers only (no ₹ symbol)
+- ${nameInstruction}
 
-[{"name":"<RealBrand> ${query}","description":"<1 sentence>","category":"${category}","current_price":<number>,"original_price":<higher number>,"platform":"${platform}","platform_url":"${platformUrl(platform, query)}","image_url":""}]
-
-Real Indian brands for ${category}: ${getBrandsForCategory(category).join(', ')}
+[{"name":${nameExample},"description":"<1 sentence>","category":"${category}","current_price":<number>,"original_price":<higher number>,"platform":"${platform}","platform_url":"${platformUrl(platform, query)}","image_url":""}]
 
 Output ${count} products:`;
 
@@ -248,42 +267,57 @@ function getBrandsForCategory(category: string): string[] {
 }
 
 // ── Save products to DB, return with id + is_new ──────────────────────────────
-// originalQuery = what the user typed ("hot and cold water bottle") — used for
-// image search so we get relevant images regardless of the AI's brand hallucinations.
 async function saveProducts(
   products: PlatformProduct[],
   originalQuery: string
 ): Promise<Array<PlatformProduct & { id: number; is_new: boolean }>> {
   const db = getDb();
+
+  // 1. Classify each product as existing or new in one pass
+  type Existing = { kind: 'existing'; p: PlatformProduct; row: Product };
+  type New      = { kind: 'new';      p: PlatformProduct };
+  const classified: (Existing | New)[] = products
+    .filter((p) => isValidProductName(p.name) && p.current_price > 0)
+    .map((p) => {
+      const row = db.prepare(
+        `SELECT * FROM products WHERE LOWER(name) = LOWER(?) AND platform = ?`
+      ).get(p.name, p.platform) as Product | undefined;
+      return row ? { kind: 'existing' as const, p, row } : { kind: 'new' as const, p };
+    });
+
+  // 2. Fetch images for new products in parallel — search by product name for relevance
+  const newItems = classified.filter((c): c is New => c.kind === 'new');
+  const imageQuery = (p: PlatformProduct) =>
+    `${p.name} ${originalQuery} ${p.platform.replace(' India', '')}`;
+  const images = await Promise.all(
+    newItems.map(({ p }) =>
+      fetchProductImage(imageQuery(p), 0)
+        .then((img) => img || getProductImage(p.category || 'General', p.name))
+    )
+  );
+
+  // 3. Persist and build result
   const saved: Array<PlatformProduct & { id: number; is_new: boolean }> = [];
-  let slotIndex = 0;
+  let newIdx = 0;
 
-  for (const p of products) {
-    if (!isValidProductName(p.name) || p.current_price <= 0) continue;
-
-    const existing = db.prepare(
-      `SELECT * FROM products WHERE LOWER(name) = LOWER(?) AND platform = ?`
-    ).get(p.name, p.platform) as Product | undefined;
-
-    if (existing) {
-      if (existing.current_price !== p.current_price) {
+  for (const item of classified) {
+    if (item.kind === 'existing') {
+      const { p, row } = item;
+      if (row.current_price !== p.current_price) {
         db.prepare(
           `UPDATE products SET current_price = ?, updated_at = datetime('now') WHERE id = ?`
-        ).run(p.current_price, existing.id);
+        ).run(p.current_price, row.id);
         db.prepare(
           `INSERT INTO price_history (product_id, price, platform) VALUES (?, ?, ?)`
-        ).run(existing.id, p.current_price, p.platform);
+        ).run(row.id, p.current_price, p.platform);
       }
-      saved.push({ ...p, id: existing.id, is_new: false });
+      saved.push({ ...p, id: row.id, is_new: false });
     } else {
+      const { p } = item;
+      const imageUrl = images[newIdx++];
       const origPrice = p.original_price > p.current_price
         ? p.original_price
         : Math.round(p.current_price * 1.4);
-
-      // Search by ORIGINAL QUERY (not product name) so hallucinated brand names
-      // like "Dr. Pepper water bottle" don't pull cola images.
-      const realImage = await fetchProductImage(originalQuery, slotIndex++);
-      const imageUrl = realImage || getProductImage(p.category || 'General', p.name);
 
       const result = db.prepare(`
         INSERT INTO products (name, description, category, current_price, original_price,
@@ -327,12 +361,13 @@ async function saveProducts(
         );
       }
 
-      saved.push({ ...p, id: newId, is_new: true });
+      saved.push({ ...p, image_url: imageUrl, id: newId, is_new: true });
     }
   }
 
   return saved;
 }
+
 
 // ── Platform auto-selection ───────────────────────────────────────────────────
 function selectPlatforms(query: string): string[] {

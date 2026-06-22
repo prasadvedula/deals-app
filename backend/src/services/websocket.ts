@@ -25,6 +25,8 @@ export function initWebSocket(server: Server): void {
   });
 }
 
+export const broadcast = broadcastNotification;
+
 export function broadcastNotification(data: Record<string, unknown>): void {
   const message = JSON.stringify(data);
   for (const client of clients) {

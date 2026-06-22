@@ -2,6 +2,9 @@
 builder = "nixpacks"
 buildCommand = "npm install && npm run build"
 
+[build.nixpacksConfig]
+node = "20"
+
 [deploy]
 startCommand = "npm start"
 healthcheckPath = "/api/health"

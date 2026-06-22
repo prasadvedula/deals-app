@@ -1,0 +1,219 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="900" viewBox="0 0 1200 900" font-family="Segoe UI, system-ui, sans-serif">
+  <defs>
+    <linearGradient id="headerGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#4f46e5"/>
+      <stop offset="100%" style="stop-color:#7c3aed"/>
+    </linearGradient>
+    <linearGradient id="card1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#eff6ff"/>
+      <stop offset="100%" style="stop-color:#dbeafe"/>
+    </linearGradient>
+    <linearGradient id="card2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f5f3ff"/>
+      <stop offset="100%" style="stop-color:#ede9fe"/>
+    </linearGradient>
+    <linearGradient id="card3" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ecfdf5"/>
+      <stop offset="100%" style="stop-color:#d1fae5"/>
+    </linearGradient>
+    <linearGradient id="card4" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fff7ed"/>
+      <stop offset="100%" style="stop-color:#fed7aa"/>
+    </linearGradient>
+    <linearGradient id="card5" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#fdf2f8"/>
+      <stop offset="100%" style="stop-color:#fce7f3"/>
+    </linearGradient>
+    <linearGradient id="card6" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#f0f9ff"/>
+      <stop offset="100%" style="stop-color:#e0f2fe"/>
+    </linearGradient>
+    <filter id="shadow">
+      <feDropShadow dx="0" dy="2" stdDeviation="4" flood-opacity="0.08"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="900" fill="#f8fafc"/>
+
+  <!-- Header -->
+  <rect x="0" y="0" width="1200" height="80" fill="url(#headerGrad)"/>
+  <text x="600" y="32" text-anchor="middle" font-size="22" font-weight="700" fill="white">🛍️  DealSense — Feature Map</text>
+  <text x="600" y="58" text-anchor="middle" font-size="13" fill="rgba(255,255,255,0.75)">Full-stack AI-powered e-commerce deals tracker for Indian market</text>
+
+  <!-- ── ROW 1 ── -->
+
+  <!-- CARD: Pages & Navigation -->
+  <rect x="24" y="100" width="270" height="240" rx="14" fill="url(#card1)" filter="url(#shadow)" stroke="#bfdbfe" stroke-width="1"/>
+  <rect x="24" y="100" width="270" height="38" rx="14" fill="#2563eb"/>
+  <rect x="24" y="124" width="270" height="14" fill="#2563eb"/>
+  <text x="39" y="124" font-size="13" font-weight="700" fill="white">📱  Pages &amp; Navigation</text>
+  <text x="39" y="156" font-size="11.5" fill="#1e40af">🏠  Trending  —  live product feed</text>
+  <text x="39" y="176" font-size="11.5" fill="#1e40af">🏷️  Best Deals  —  top discounts</text>
+  <text x="39" y="196" font-size="11.5" fill="#1e40af">📦  Catalog  —  browse all products</text>
+  <text x="39" y="216" font-size="11.5" fill="#1e40af">🔍  AI Search (Find)  —  cross-platform</text>
+  <text x="39" y="236" font-size="11.5" fill="#1e40af">😊  Mood Shop  —  emotion-driven picks</text>
+  <text x="39" y="256" font-size="11.5" fill="#1e40af">🤖  AI Hub  —  LangGraph agents</text>
+  <text x="39" y="276" font-size="11.5" fill="#1e40af">💬  Chat  —  AI shopping assistant</text>
+  <text x="39" y="296" font-size="11.5" fill="#1e40af">➕  Add Product  —  import by URL</text>
+  <text x="39" y="316" font-size="11.5" fill="#1e40af">❤️  Wishlist  ·  🔔  Alerts</text>
+
+  <!-- CARD: AI Hub / LangGraph -->
+  <rect x="310" y="100" width="270" height="240" rx="14" fill="url(#card2)" filter="url(#shadow)" stroke="#ddd6fe" stroke-width="1"/>
+  <rect x="310" y="100" width="270" height="38" rx="14" fill="#7c3aed"/>
+  <rect x="310" y="124" width="270" height="14" fill="#7c3aed"/>
+  <text x="325" y="124" font-size="13" font-weight="700" fill="white">⚡  AI Hub — LangGraph Agents</text>
+  <text x="325" y="156" font-size="11" fill="#5b21b6" font-weight="600">Supervisor Tab</text>
+  <text x="325" y="172" font-size="11" fill="#6d28d9">  • Routes query to specialist agent</text>
+  <text x="325" y="188" font-size="11" fill="#6d28d9">  • Price Search agent</text>
+  <text x="325" y="204" font-size="11" fill="#6d28d9">  • Budget Advisor (25k → ₹25,000)</text>
+  <text x="325" y="220" font-size="11" fill="#6d28d9">  • Review Aggregator (AI synthesis)</text>
+  <text x="325" y="236" font-size="11" fill="#6d28d9">  • Buy Time Predictor</text>
+  <text x="325" y="252" font-size="11" fill="#6d28d9">  • Deal Hunter alerts</text>
+  <text x="325" y="270" font-size="11" fill="#5b21b6" font-weight="600">Goals Tab  —  CRUD deal targets</text>
+  <text x="325" y="290" font-size="11" fill="#5b21b6" font-weight="600">Report Tab  —  weekly AI summary</text>
+  <text x="325" y="315" font-size="10" fill="#8b5cf6" font-style="italic">StateGraph · Annotation · conditional edges</text>
+
+  <!-- CARD: Product Intelligence -->
+  <rect x="596" y="100" width="270" height="240" rx="14" fill="url(#card3)" filter="url(#shadow)" stroke="#a7f3d0" stroke-width="1"/>
+  <rect x="596" y="100" width="270" height="38" rx="14" fill="#059669"/>
+  <rect x="596" y="124" width="270" height="14" fill="#059669"/>
+  <text x="611" y="124" font-size="13" font-weight="700" fill="white">📊  Product Intelligence (Detail Tabs)</text>
+  <text x="611" y="156" font-size="11" fill="#065f46" font-weight="600">Overview  —  specs &amp; deal score</text>
+  <text x="611" y="174" font-size="11" fill="#047857">Price Pulse  —  monthly bar chart</text>
+  <text x="611" y="190" font-size="11" fill="#047857">  • All-time high / low / average</text>
+  <text x="611" y="206" font-size="11" fill="#047857">  • Best vs worst months (deduped)</text>
+  <text x="611" y="222" font-size="11" fill="#047857">  • Indian sale calendar mapping</text>
+  <text x="611" y="240" font-size="11" fill="#047857">Reviews  —  AI knowledge synthesis</text>
+  <text x="611" y="258" font-size="11" fill="#047857">Coupons  —  bank + wallet stacking</text>
+  <text x="611" y="276" font-size="11" fill="#047857">Sale Season  —  countdown to events</text>
+  <text x="611" y="294" font-size="11" fill="#047857">Buy Timing  —  price prediction</text>
+  <text x="611" y="315" font-size="10" fill="#10b981" font-style="italic">24 h cache · AI insight · per-product</text>
+
+  <!-- CARD: Auth & User -->
+  <rect x="882" y="100" width="294" height="240" rx="14" fill="url(#card4)" filter="url(#shadow)" stroke="#fed7aa" stroke-width="1"/>
+  <rect x="882" y="100" width="294" height="38" rx="14" fill="#d97706"/>
+  <rect x="882" y="124" width="294" height="14" fill="#d97706"/>
+  <text x="897" y="124" font-size="13" font-weight="700" fill="white">🔐  Auth &amp; User System</text>
+  <text x="897" y="156" font-size="11" fill="#92400e" font-weight="600">JWT Authentication (30-day tokens)</text>
+  <text x="897" y="174" font-size="11" fill="#b45309">  • POST /api/auth/register</text>
+  <text x="897" y="190" font-size="11" fill="#b45309">  • POST /api/auth/login</text>
+  <text x="897" y="206" font-size="11" fill="#b45309">  • GET  /api/auth/me</text>
+  <text x="897" y="224" font-size="11" fill="#92400e" font-weight="600">Guest Browsing allowed</text>
+  <text x="897" y="242" font-size="11" fill="#b45309">  • requireAuth gates Wishlist writes</text>
+  <text x="897" y="258" font-size="11" fill="#b45309">  • optionalAuth for read endpoints</text>
+  <text x="897" y="276" font-size="11" fill="#b45309">  • LoginModal prompt on heart-click</text>
+  <text x="897" y="296" font-size="11" fill="#92400e" font-weight="600">Avatar initials · User dropdown</text>
+  <text x="897" y="316" font-size="10" fill="#d97706" font-style="italic">bcrypt hash · localStorage token</text>
+
+  <!-- ── ROW 2 ── -->
+
+  <!-- CARD: Smart Features -->
+  <rect x="24" y="360" width="270" height="220" rx="14" fill="url(#card5)" filter="url(#shadow)" stroke="#fbcfe8" stroke-width="1"/>
+  <rect x="24" y="360" width="270" height="38" rx="14" fill="#db2777"/>
+  <rect x="24" y="384" width="270" height="14" fill="#db2777"/>
+  <text x="39" y="384" font-size="13" font-weight="700" fill="white">✨  Smart Shopping Features</text>
+  <text x="39" y="416" font-size="11" fill="#9d174d" font-weight="600">😊 Mood Shopping</text>
+  <text x="39" y="432" font-size="11" fill="#be185d">  • 6 mood chips (treat myself, gift…)</text>
+  <text x="39" y="448" font-size="11" fill="#be185d">  • Budget filter pills (₹500–₹10K)</text>
+  <text x="39" y="464" font-size="11" fill="#be185d">  • AI curates 4-6 products per mood</text>
+  <text x="39" y="484" font-size="11" fill="#9d174d" font-weight="600">🎯 Coupon Stack Advisor</text>
+  <text x="39" y="500" font-size="11" fill="#be185d">  • HDFC / ICICI / SBI / Axis cards</text>
+  <text x="39" y="516" font-size="11" fill="#be185d">  • Platform coupons + wallet cashback</text>
+  <text x="39" y="532" font-size="11" fill="#be185d">  • EMI + exchange offers stacking</text>
+  <text x="39" y="552" font-size="10" fill="#ec4899" font-style="italic">AI-generated · stackable field · savings est.</text>
+
+  <!-- CARD: Seasonal & Alerts -->
+  <rect x="310" y="360" width="270" height="220" rx="14" fill="url(#card6)" filter="url(#shadow)" stroke="#bae6fd" stroke-width="1"/>
+  <rect x="310" y="360" width="270" height="38" rx="14" fill="#0284c7"/>
+  <rect x="310" y="384" width="270" height="14" fill="#0284c7"/>
+  <text x="325" y="384" font-size="13" font-weight="700" fill="white">🗓️  Seasonal Patterns &amp; Alerts</text>
+  <text x="325" y="416" font-size="11" fill="#075985" font-weight="600">Indian Sale Calendar</text>
+  <text x="325" y="432" font-size="11" fill="#0369a1">  • Diwali · Big Billion Days · GIF</text>
+  <text x="325" y="448" font-size="11" fill="#0369a1">  • Republic Day · Prime Day · Holi</text>
+  <text x="325" y="464" font-size="11" fill="#0369a1">  • Days-until countdown per event</text>
+  <text x="325" y="484" font-size="11" fill="#075985" font-weight="600">Seasonal Banner (site-wide)</text>
+  <text x="325" y="500" font-size="11" fill="#0369a1">  • Red gradient for live sales</text>
+  <text x="325" y="516" font-size="11" fill="#0369a1">  • Violet for coming-soon (&lt;14 days)</text>
+  <text x="325" y="532" font-size="11" fill="#0369a1">  • Dismissible · auto-detects live</text>
+  <text x="325" y="552" font-size="10" fill="#38bdf8" font-style="italic">category-filtered · full-year calendar build</text>
+
+  <!-- CARD: Backend Infra -->
+  <rect x="596" y="360" width="270" height="220" rx="14" fill="#fafafa" filter="url(#shadow)" stroke="#e5e7eb" stroke-width="1"/>
+  <rect x="596" y="360" width="270" height="38" rx="14" fill="#374151"/>
+  <rect x="596" y="384" width="270" height="14" fill="#374151"/>
+  <text x="611" y="384" font-size="13" font-weight="700" fill="white">⚙️  Backend Infrastructure</text>
+  <text x="611" y="416" font-size="11" fill="#1f2937" font-weight="600">API Routes</text>
+  <text x="611" y="432" font-size="11" fill="#374151">  • /api/products  (CRUD + search)</text>
+  <text x="611" y="448" font-size="11" fill="#374151">  • /api/products/:id/deal-dna</text>
+  <text x="611" y="464" font-size="11" fill="#374151">  • /api/products/:id/coupons</text>
+  <text x="611" y="480" font-size="11" fill="#374151">  • /api/products/:id/seasonal</text>
+  <text x="611" y="496" font-size="11" fill="#374151">  • /api/ai/mood-search · /seasonal</text>
+  <text x="611" y="512" font-size="11" fill="#374151">  • /api/favorites (requireAuth)</text>
+  <text x="611" y="528" font-size="11" fill="#374151">  • /api/supervisor · /api/goals</text>
+  <text x="611" y="548" font-size="10" fill="#6b7280" font-style="italic">SQLite · better-sqlite3 · Express · WS</text>
+
+  <!-- CARD: Alert Bot & Realtime -->
+  <rect x="882" y="360" width="294" height="220" rx="14" fill="#f0fdf4" filter="url(#shadow)" stroke="#bbf7d0" stroke-width="1"/>
+  <rect x="882" y="360" width="294" height="38" rx="14" fill="#16a34a"/>
+  <rect x="882" y="384" width="294" height="14" fill="#16a34a"/>
+  <text x="897" y="384" font-size="13" font-weight="700" fill="white">📡  Alert Bot &amp; Real-time</text>
+  <text x="897" y="416" font-size="11" fill="#14532d" font-weight="600">Alert Bot (Telegraf)</text>
+  <text x="897" y="432" font-size="11" fill="#15803d">  • /start  /help  /deals  /goals</text>
+  <text x="897" y="448" font-size="11" fill="#15803d">  • /search &lt;query&gt;</text>
+  <text x="897" y="464" font-size="11" fill="#15803d">  • /watch &lt;product&gt; [max_price]</text>
+  <text x="897" y="480" font-size="11" fill="#15803d">  • sendAlertBotMessage() on price drop</text>
+  <text x="897" y="500" font-size="11" fill="#14532d" font-weight="600">WebSocket (ws)</text>
+  <text x="897" y="516" font-size="11" fill="#15803d">  • Real-time price drop push</text>
+  <text x="897" y="532" font-size="11" fill="#15803d">  • Browser Notification API</text>
+  <text x="897" y="548" font-size="10" fill="#22c55e" font-style="italic">TELEGRAM_BOT_TOKEN env · tg_ user IDs</text>
+
+  <!-- ── ROW 3 ── -->
+
+  <!-- CARD: AI Stack -->
+  <rect x="24" y="600" width="350" height="185" rx="14" fill="#fffbeb" filter="url(#shadow)" stroke="#fde68a" stroke-width="1"/>
+  <rect x="24" y="600" width="350" height="38" rx="14" fill="#b45309"/>
+  <rect x="24" y="624" width="350" height="14" fill="#b45309"/>
+  <text x="39" y="624" font-size="13" font-weight="700" fill="white">🧠  AI / LLM Stack</text>
+  <text x="39" y="658" font-size="11" fill="#78350f" font-weight="600">Providers (switchable via .env)</text>
+  <text x="39" y="675" font-size="11" fill="#92400e">  • Groq  (⚡ fast inference)  — default</text>
+  <text x="39" y="691" font-size="11" fill="#92400e">  • Anthropic Claude API</text>
+  <text x="39" y="707" font-size="11" fill="#92400e">  • Ollama  (local fallback)</text>
+  <text x="39" y="727" font-size="11" fill="#78350f" font-weight="600">Usage across features</text>
+  <text x="39" y="743" font-size="11" fill="#92400e">  • Intent classify · query parse (JSON)</text>
+  <text x="39" y="759" font-size="11" fill="#92400e">  • Review synthesis · price insight</text>
+  <text x="39" y="775" font-size="10" fill="#d97706" font-style="italic">generateResponse() · ChatGroq · @langchain/groq</text>
+
+  <!-- CARD: Data Model -->
+  <rect x="390" y="600" width="350" height="185" rx="14" fill="#f5f3ff" filter="url(#shadow)" stroke="#ddd6fe" stroke-width="1"/>
+  <rect x="390" y="600" width="350" height="38" rx="14" fill="#5b21b6"/>
+  <rect x="390" y="624" width="350" height="14" fill="#5b21b6"/>
+  <text x="405" y="624" font-size="13" font-weight="700" fill="white">🗄️  Database Schema (SQLite)</text>
+  <text x="405" y="656" font-size="11" fill="#4c1d95" font-weight="600">Tables</text>
+  <text x="405" y="673" font-size="11" fill="#5b21b6">  products  ·  price_history  ·  users</text>
+  <text x="405" y="689" font-size="11" fill="#5b21b6">  favorites  ·  alerts  ·  deal_goals</text>
+  <text x="405" y="705" font-size="11" fill="#5b21b6">  notifications  ·  weekly_reports</text>
+  <text x="405" y="721" font-size="11" fill="#5b21b6">  product_reviews  (24 h cache)</text>
+  <text x="405" y="741" font-size="11" fill="#4c1d95" font-weight="600">Key fields</text>
+  <text x="405" y="757" font-size="11" fill="#5b21b6">  trending_score · discount_pct</text>
+  <text x="405" y="773" font-size="11" fill="#5b21b6">  avatar_initials · password_hash</text>
+  <text x="405" y="778" font-size="10" fill="#8b5cf6" font-style="italic"> </text>
+
+  <!-- CARD: Frontend Stack -->
+  <rect x="756" y="600" width="420" height="185" rx="14" fill="#f0f9ff" filter="url(#shadow)" stroke="#bae6fd" stroke-width="1"/>
+  <rect x="756" y="600" width="420" height="38" rx="14" fill="#0369a1"/>
+  <rect x="756" y="624" width="420" height="14" fill="#0369a1"/>
+  <text x="771" y="624" font-size="13" font-weight="700" fill="white">💻  Frontend Stack &amp; Deployment</text>
+  <text x="771" y="658" font-size="11" fill="#0c4a6e" font-weight="600">Tech</text>
+  <text x="771" y="674" font-size="11" fill="#0369a1">  React 18 · TypeScript · Vite · Tailwind CSS</text>
+  <text x="771" y="690" font-size="11" fill="#0369a1">  React Router · Recharts · Lucide icons</text>
+  <text x="771" y="706" font-size="11" fill="#0369a1">  AuthContext · useWebSocket hook</text>
+  <text x="771" y="726" font-size="11" fill="#0c4a6e" font-weight="600">Deployment</text>
+  <text x="771" y="742" font-size="11" fill="#0369a1">  Frontend → Vercel (frontend-five-chi-99.vercel.app)</text>
+  <text x="771" y="758" font-size="11" fill="#0369a1">  Backend  → Railway  (Node 18 · Express)</text>
+  <text x="771" y="774" font-size="10" fill="#0284c7" font-style="italic">VITE_API_URL env · JWT_SECRET · GROQ_API_KEY · TELEGRAM_BOT_TOKEN</text>
+
+  <!-- Footer -->
+  <rect x="0" y="856" width="1200" height="44" fill="#1e1b4b"/>
+  <text x="600" y="882" text-anchor="middle" font-size="11.5" fill="rgba(255,255,255,0.65)">DealSense · 16 features · React + TypeScript + Express + SQLite + LangGraph + Groq AI · Indian e-commerce market</text>
+</svg>
