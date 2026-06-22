@@ -21,7 +21,9 @@ const PORT = process.env.PORT || 3001;
  * --skip-history keeps the first run fast (~20s); history builds up over time.
  */
 function autoImportIfEmpty(): void {
-  if (process.env.NODE_ENV !== 'production') return;
+  // RAILWAY_ENVIRONMENT is always injected by Railway; NODE_ENV may also be set
+  const onRailway = !!process.env.RAILWAY_ENVIRONMENT || process.env.NODE_ENV === 'production';
+  if (!onRailway) return;
 
   const db  = getDb();
   const row = db.prepare('SELECT COUNT(*) as n FROM products').get() as { n: number };
