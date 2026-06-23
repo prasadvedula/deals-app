@@ -35,23 +35,125 @@ fs.mkdirSync(path.dirname(DB_PATH), { recursive: true });
 
 const PLATFORMS = ['Flipkart', 'Amazon India', 'Myntra', 'Nykaa', 'Meesho'];
 
-// Unsplash photo IDs per category (fallback images)
-const IMAGES = {
-  Smartphones:            'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=400',
-  Laptops:                'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?w=400',
-  Tablets:                'https://images.unsplash.com/photo-1544244015-0df4b3ffc6b0?w=400',
-  'Audio & Earbuds':      'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=400',
-  'Smart Watches':        'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=400',
-  Televisions:            'https://images.unsplash.com/photo-1593359677879-a4bb92f829d1?w=400',
-  'Home Appliances':      'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=400',
-  "Men's Clothing":       'https://images.unsplash.com/photo-1602810318383-e386cc2a3ccf?w=400',
-  "Women's Clothing":     'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400',
-  Footwear:               'https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=400',
-  'Beauty & Skincare':    'https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=400',
-  'Home & Kitchen':       'https://images.unsplash.com/photo-1556909114-44e3e70034e2?w=400',
-  'Sports & Fitness':     'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400',
-  Books:                  'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?w=400',
+// Per-category Unsplash image pools (8 verified photos each).
+// Within each category products cycle through the pool so no two adjacent
+// products share the same image.  For positions beyond the pool the image
+// falls back to Picsum seeded on the global product index, ensuring every
+// product is visually unique.
+const IMAGE_POOLS = {
+  Smartphones: [
+    'photo-1511707171634-5f897ff02aa9', 'photo-1592750475338-74b7b21085ab',
+    'photo-1598327105666-5b89351aff97', 'photo-1567721913486-6585f069b898',
+    'photo-1580910051074-3eb694886505', 'photo-1574944985070-8f3ebc6b79d2',
+    'photo-1512054502232-10a0a035d672', 'photo-1516321497487-e288fb19713f',
+  ],
+  Laptops: [
+    'photo-1496181133206-80ce9b88a853', 'photo-1484788984921-03950022c9ef',
+    'photo-1517336714731-489689fd1ca8', 'photo-1525547719571-a2d4ac8945e2',
+    'photo-1541807084-5c52b6b3adef',   'photo-1593642632559-0c6d3fc62b89',
+    'photo-1588872657578-7eaee9e1d8f4', 'photo-1603302576837-37561b2e2302',
+  ],
+  Tablets: [
+    'photo-1544244015-0df4b3ffc6b0', 'photo-1561154464-82e9adf32764',
+    'photo-1527698952-9c24c6a56c65', 'photo-1481349518771-20055b2a7b24',
+    'photo-1602532305019-3dbbd482dae7', 'photo-1585790050230-5dd28404ccb9',
+    'photo-1434631488637-463ef0955d5e', 'photo-1519389950473-47ba0277781c',
+  ],
+  'Audio & Earbuds': [
+    'photo-1590658268037-6bf12165a8df', 'photo-1505740420928-5e560c06d30e',
+    'photo-1484704849700-f032a568e944', 'photo-1546435770-a3e426bf472b',
+    'photo-1583394293253-4729045d7c46', 'photo-1613040809024-b4ef82f6fa73',
+    'photo-1608043152269-423dbba4e7e1', 'photo-1491927570842-0a4779a7ddc3',
+  ],
+  'Smart Watches': [
+    'photo-1579586337278-3befd40fd17a', 'photo-1523275335684-37898b6baf30',
+    'photo-1434494878577-86c23bcb06b9', 'photo-1508685096489-7aacd43bd3b1',
+    'photo-1617043786394-f977fa12eddf', 'photo-1551698618-1dfebf97708e',
+    'photo-1565031491910-e57fac031c41', 'photo-1546868871-7041f2a55e12',
+  ],
+  Televisions: [
+    'photo-1593359677879-a4bb92f829d1', 'photo-1567690187548-f07b1d7bf754',
+    'photo-1461151304267-38535e780c79', 'photo-1509281373149-e957c6296406',
+    'photo-1619953942547-233ac6b2a5aa', 'photo-1558618666-fcd25c85cd64',
+    'photo-1584905066893-7d5c142ba4e1', 'photo-1535016120720-40c646be5580',
+  ],
+  'Home Appliances': [
+    'photo-1556909114-f6e7ad7d3136', 'photo-1574269909862-7e1d70bb8078',
+    'photo-1585771724684-38269d6639fd', 'photo-1556909212-d5b604d0c90d',
+    'photo-1584568694244-14fbdf83bd30', 'photo-1565538810643-b5bdb714032a',
+    'photo-1581091226825-a6a2a5aee158', 'photo-1583241475880-083f84372725',
+  ],
+  "Men's Clothing": [
+    'photo-1602810318383-e386cc2a3ccf', 'photo-1490578474895-699cd4e2cf59',
+    'photo-1617137968427-85924c800a22', 'photo-1603252109303-2751441dd157',
+    'photo-1516257984-b1b4d707412e', 'photo-1487222444645-4d8a0a5f4571',
+    'photo-1620799140408-edc6dcb6d633', 'photo-1593030761757-71fae45fa0e7',
+  ],
+  "Women's Clothing": [
+    'photo-1434389677669-e08b4cac3105', 'photo-1515886657613-9f3515b0c78f',
+    'photo-1539109136881-3be0616acf4b', 'photo-1483985988355-763728e1802e',
+    'photo-1469334031218-e382a71b716b', 'photo-1581044777550-4cfa60707c03',
+    'photo-1526413519671-785943f07879', 'photo-1548549557-dbe9946621da',
+  ],
+  Footwear: [
+    'photo-1542291026-7eec264c27ff', 'photo-1600185365926-3a2ce3cdb9eb',
+    'photo-1595341888016-a392ef81b7de', 'photo-1460353581641-37baddab0fa2',
+    'photo-1491553895911-0055eca6402d', 'photo-1606107557195-0e29a4b5b4aa',
+    'photo-1583744946564-b52ac1c389c8', 'photo-1543163521-1bf539c55dd2',
+  ],
+  'Beauty & Skincare': [
+    'photo-1596462502278-27bfdc403348', 'photo-1571781926291-c477ebfd024b',
+    'photo-1522335789203-aabd1fc54bc9', 'photo-1620916566398-39f1143ab7be',
+    'photo-1556228578-0d85b1a4d571', 'photo-1585387786689-7ddfc0b4de53',
+    'photo-1609710228159-0fa9bd7c0827', 'photo-1598440947952-7398dc391bad',
+  ],
+  'Home & Kitchen': [
+    'photo-1556909114-44e3e70034e2', 'photo-1556909172-54557c7e4fb7',
+    'photo-1556909114-f6e7ad7d3136', 'photo-1484154218962-a197022b5858',
+    'photo-1556909212-d5b604d0c90d', 'photo-1565538420870-da08ff96a207',
+    'photo-1604709177225-055f99402ea3', 'photo-1585771724684-38269d6639fd',
+  ],
+  'Sports & Fitness': [
+    'photo-1571019613454-1cb2f99b2d8b', 'photo-1517836357463-d25dfeac3438',
+    'photo-1571888784168-f6c7bd71ea77', 'photo-1540497077202-7c8a3999166f',
+    'photo-1578763363228-6e8428de69b2', 'photo-1526401485004-46910ecc8e51',
+    'photo-1574680096145-d05b474e2155', 'photo-1598300042247-d088f8ab3a91',
+  ],
+  Books: [
+    'photo-1495446815901-a7297e633e8d', 'photo-1512820790803-83ca734da794',
+    'photo-1524995997946-a1c2e315a42f', 'photo-1497633762265-9d179a990aa6',
+    'photo-1474932430478-367dbb6832c1', 'photo-1507842217343-583bb7270b66',
+    'photo-1456513080510-7bf3a84b82f8', 'photo-1481627834876-b7833e8f5570',
+  ],
 };
+
+// Each category owns a seed range of 500.  Within a category the first
+// 8 products use the curated Unsplash pool (clearly product-relevant);
+// beyond that Picsum takes over with a unique seed so every product in
+// a 24-item catalog page is visually distinct.
+const CATEGORY_SEED_OFFSET = {
+  Smartphones:        0,    Laptops:          500,  Tablets:          1000,
+  'Audio & Earbuds':  1500, 'Smart Watches':  2000, Televisions:      2500,
+  'Home Appliances':  3000, "Men's Clothing": 3500, "Women's Clothing":4000,
+  Footwear:           4500, 'Beauty & Skincare':5000,'Home & Kitchen': 5500,
+  'Sports & Fitness': 6000, Books:            6500,
+};
+
+/**
+ * Returns a deterministic, visually unique image URL per product.
+ * - catIdx 0-7 (first 8 per category): curated Unsplash photo — category-relevant.
+ * - catIdx 8+: Picsum seeded by (categoryOffset + catIdx % 500) — 500 unique
+ *   images per category, so no two products on a 24-item catalog page repeat.
+ */
+function imageFor(category, catIdx) {
+  const pool = IMAGE_POOLS[category];
+  if (pool && catIdx < pool.length) {
+    return `https://images.unsplash.com/${pool[catIdx]}?w=400&auto=format&fit=crop`;
+  }
+  const offset = CATEGORY_SEED_OFFSET[category] ?? 7000;
+  const seed   = offset + (catIdx % 500);
+  return `https://picsum.photos/seed/${seed}/400/300`;
+}
 
 // ── Category definitions ──────────────────────────────────────────────────────
 const CATALOG = [
@@ -387,7 +489,6 @@ function generateProducts(total) {
   const rawTotal   = CATALOG.reduce((s, c) => s + c.count, 0);
   const scale      = total / rawTotal;
   const products   = [];
-
   for (const cat of CATALOG) {
     const n = Math.round(cat.count * scale);
     for (let i = 0; i < n; i++) {
@@ -406,7 +507,7 @@ function generateProducts(total) {
         category:       cat.category,
         current_price:  curr,
         original_price: Math.max(orig, curr + 100),
-        image_url:      IMAGES[cat.category] ?? '',
+        image_url:      imageFor(cat.category, i),   // i = within-category index
         platform:       plat,
         platform_url:   '',
         trending_score: trend,
