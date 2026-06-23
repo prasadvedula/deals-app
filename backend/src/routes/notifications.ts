@@ -1,14 +1,21 @@
 import { Router, Request, Response } from 'express';
 import { getDb } from '../database/db';
 import { Notification } from '../models/types';
+import { optionalAuth, JwtPayload } from '../middleware/auth';
 
 const router = Router();
-const DEFAULT_USER = 'default_user';
+
+// JWT user → "user_1", query param → as-is, else default
+function resolveUserId(req: Request): string {
+  const u = (req as Request & { user?: JwtPayload }).user;
+  if (u) return `user_${u.userId}`;
+  return (req.query.user_id as string) || 'default_user';
+}
 
 // GET /api/notifications
-router.get('/', (req: Request, res: Response) => {
-  const db = getDb();
-  const userId = (req.query.user_id as string) || DEFAULT_USER;
+router.get('/', optionalAuth, (req: Request, res: Response) => {
+  const db        = getDb();
+  const userId    = resolveUserId(req);
   const unreadOnly = req.query.unread === 'true';
 
   let query = `
@@ -35,9 +42,9 @@ router.get('/', (req: Request, res: Response) => {
 });
 
 // PATCH /api/notifications/:id/read
-router.patch('/:id/read', (req: Request, res: Response) => {
-  const db = getDb();
-  const userId = (req.query.user_id as string) || DEFAULT_USER;
+router.patch('/:id/read', optionalAuth, (req: Request, res: Response) => {
+  const db     = getDb();
+  const userId = resolveUserId(req);
 
   const result = db.prepare(
     'UPDATE notifications SET read = 1 WHERE id = ? AND user_id = ?'
@@ -51,26 +58,21 @@ router.patch('/:id/read', (req: Request, res: Response) => {
 });
 
 // PATCH /api/notifications/read-all
-router.patch('/read-all', (req: Request, res: Response) => {
-  const db = getDb();
-  const userId = (req.query.user_id as string) || DEFAULT_USER;
+router.patch('/read-all', optionalAuth, (req: Request, res: Response) => {
+  const db     = getDb();
+  const userId = resolveUserId(req);
 
-  db.prepare(
-    'UPDATE notifications SET read = 1 WHERE user_id = ?'
-  ).run(userId);
-
+  db.prepare('UPDATE notifications SET read = 1 WHERE user_id = ?').run(userId);
   res.json({ success: true });
 });
 
 // DELETE /api/notifications/:id
-router.delete('/:id', (req: Request, res: Response) => {
-  const db = getDb();
-  const userId = (req.query.user_id as string) || DEFAULT_USER;
+router.delete('/:id', optionalAuth, (req: Request, res: Response) => {
+  const db     = getDb();
+  const userId = resolveUserId(req);
 
-  db.prepare(
-    'DELETE FROM notifications WHERE id = ? AND user_id = ?'
-  ).run(req.params.id, userId);
-
+  db.prepare('DELETE FROM notifications WHERE id = ? AND user_id = ?')
+    .run(req.params.id, userId);
   res.json({ success: true });
 });
 

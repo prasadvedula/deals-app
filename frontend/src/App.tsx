@@ -34,11 +34,12 @@ function AppInner() {
   }, [user]);
 
   const loadUnreadCount = useCallback(async () => {
+    if (!user) { setNotificationCount(0); return; }
     try {
       const data = await api.getNotifications(true);
       setNotificationCount(data.unreadCount);
     } catch {}
-  }, []);
+  }, [user]);
 
   useEffect(() => {
     loadFavoriteIds();
