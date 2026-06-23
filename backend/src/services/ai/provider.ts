@@ -45,7 +45,7 @@ export function getOllamaClient(): OpenAI {
   return _ollamaClient;
 }
 
-function getGroqClient(): OpenAI {
+export function getGroqClient(): OpenAI {
   if (!_groqClient) {
     const key = process.env.GROQ_API_KEY;
     if (!key) throw new Error('GROQ_API_KEY is required when AI_PROVIDER=groq');

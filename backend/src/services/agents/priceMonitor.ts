@@ -1,5 +1,5 @@
 import { getDb } from '../../database/db';
-import { AI_PROVIDER, CLAUDE_MODEL, OLLAMA_CHAT_MODEL, getOllamaClient } from '../ai/provider';
+import { AI_PROVIDER, CLAUDE_MODEL, OLLAMA_CHAT_MODEL, GROQ_CHAT_MODEL, getOllamaClient, getGroqClient } from '../ai/provider';
 import { Product } from '../../models/types';
 import { broadcastNotification } from '../websocket';
 
@@ -131,10 +131,10 @@ function executeTool(name: string, input: Record<string, unknown>): unknown {
   return { error: `Unknown tool: ${name}` };
 }
 
-// ── Ollama agentic loop ──────────────────────────────────────────────────────
-async function runWithOllama(products: Product[]): Promise<void> {
-  const client = getOllamaClient();
-  const list = products.map((p) => `ID:${p.id} "${p.name}" $${p.current_price} (orig $${p.original_price})`).join('\n');
+// ── OpenAI-compatible agentic loop (Ollama + Groq) ──────────────────────────
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function runWithOpenAICompatible(client: any, model: string, label: string, products: Product[]): Promise<void> {
+  const list = products.map((p) => `ID:${p.id} "${p.name}" ₹${p.current_price} (orig ₹${p.original_price})`).join('\n');
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const messages: any[] = [
@@ -145,7 +145,7 @@ async function runWithOllama(products: Product[]): Promise<void> {
   for (let i = 0; i < 30; i++) {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const res = await (client.chat.completions.create as any)({
-      model: OLLAMA_CHAT_MODEL,
+      model,
       messages,
       tools: TOOLS_OPENAI,
       tool_choice: 'auto',
@@ -162,7 +162,7 @@ async function runWithOllama(products: Product[]): Promise<void> {
       const fnName: string = call.function?.name ?? call.name;
       const fnArgs: string = call.function?.arguments ?? JSON.stringify(call.arguments ?? {});
       const input = JSON.parse(fnArgs) as Record<string, unknown>;
-      console.log(`[Agent:ollama] ${fnName}`, JSON.stringify(input).slice(0, 80));
+      console.log(`[Agent:${label}] ${fnName}`, JSON.stringify(input).slice(0, 80));
       const result = executeTool(fnName, input);
       messages.push({ role: 'tool', tool_call_id: call.id, content: JSON.stringify(result) });
     }
@@ -218,7 +218,9 @@ export async function runPriceMonitorAgent(products: Product[]): Promise<void> {
 
   try {
     if (AI_PROVIDER === 'ollama') {
-      await runWithOllama(products);
+      await runWithOpenAICompatible(getOllamaClient(), OLLAMA_CHAT_MODEL, 'ollama', products);
+    } else if (AI_PROVIDER === 'groq') {
+      await runWithOpenAICompatible(getGroqClient(), GROQ_CHAT_MODEL, 'groq', products);
     } else {
       await runWithClaude(products);
     }
